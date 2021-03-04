@@ -14,8 +14,4 @@
         font-family: ChrastinaProGX;
         src: url('ChrastinaProGX.ttf');
     }
-
-    a {
-        @apply cursor-pointer;
-    }
 }
