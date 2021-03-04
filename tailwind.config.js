@@ -3,6 +3,9 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      backgroundImage: {
+        'homepage': 'url("./illustration.png")',
+      },
       borderWidth: {
         '1': '1px',
       },
@@ -22,7 +25,7 @@ module.exports = {
   },
   variants: {
     extend: {
-      visibility: ['group-hover']
+      display: ['group-hover']
     },
   },
   plugins: [],
