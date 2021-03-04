@@ -5,6 +5,16 @@
 @tailwind utilities;
 
 @layer base {
+    @font-face {
+        font-family: Zaum;
+        src: url('Zaum-Typeface.ttf');
+    }
+
+    @font-face {
+        font-family: ChrastinaProGX;
+        src: url('ChrastinaProGX.ttf');
+    }
+
     a {
         @apply cursor-pointer;
     }

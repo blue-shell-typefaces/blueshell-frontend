@@ -14,6 +14,10 @@ module.exports = {
         grab: 'grab',
         grabbing: 'grabbing',
       },
+      fontFamily: {
+        'chrastina': 'ChrastinaProGX',
+        'zaum': 'Zaum',
+      }
     },
   },
   variants: {

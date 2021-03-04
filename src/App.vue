@@ -24,15 +24,15 @@
           <button class="bg-yellow px-3 rounded-full">Buy</button>
         </div>
       </div>
-      <textarea class="bg-transparent flex-grow flex-shrink-0 font-serif placeholder-current resize-none text-center w-full"
+      <textarea class="bg-transparent flex-grow flex-shrink-0 font-chrastina placeholder-current resize-none text-center w-full"
                 placeholder="Only kill"
                 ref="textarea"
                 rows="1"
+                :style="`--wght: ${wght}; --mood: ${mood}; font-variation-settings: 'wght' var(--wght), 'mood' var(--mood);`"
                 spellcheck="false"></textarea>
       <div>
-        <Slider min="0" max="1000" />
-        <Slider min="0" max="1000" />
-        <Slider min="0" max="1000" />
+        <Slider :value.sync="wght" :min="0" :max="1000" :markers="{0: 'Narrow', 500: 'Normal', 1000: 'Wide'}" />
+        <Slider :value.sync="mood" :min="0" :max="1000" :markers="{0: 'Light', 500: 'Normal', 1000: 'Bold'}" />
       </div>
     </div>
   </div>
@@ -46,9 +46,16 @@ export default {
   components: {
     Slider,
   },
+  data() {
+    return {
+      wght: 500,
+      mood: 500,
+    }
+  },
   mounted() {
     const height = window.innerHeight / 2
     this.$refs.textarea.style.fontSize = `${height}px`
+
   }
 }
 </script>
