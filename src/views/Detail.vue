@@ -27,7 +27,7 @@ import Menu from "@/components/Menu";
 import Slider from "@/components/Slider";
 
 export default {
-  name: 'App',
+  name: 'Detail',
   components: {
     Menu,
     Slider,
