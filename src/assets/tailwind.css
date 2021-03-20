@@ -3,15 +3,3 @@
 @tailwind components;
 
 @tailwind utilities;
-
-@layer base {
-    @font-face {
-        font-family: Zaum;
-        src: url('fonts/Zaum-Typeface.ttf');
-    }
-
-    @font-face {
-        font-family: ChrastinaProGX;
-        src: url('fonts/ChrastinaProGX.ttf');
-    }
-}
