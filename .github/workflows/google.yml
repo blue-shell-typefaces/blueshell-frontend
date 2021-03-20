@@ -54,6 +54,7 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
+        git clone https://${{ secrets.MY_GITHUB_TOKEN }}@github.com/blue-shell-typefaces/fonts ./src/assets/fonts
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
