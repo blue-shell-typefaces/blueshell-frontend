@@ -33,6 +33,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Checkout fonts
+      uses: actions/checkout@v2
+      path: ./src/assets/fonts
+      repository: blue-shell-typefaces/fonts
+      token: ${{ secrets.MY_GITHUB_TOKEN }}
+
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@v0.2.0
       with:
@@ -54,7 +60,6 @@ jobs:
     # Build the Docker image
     - name: Build
       run: |-
-        git clone https://${{ secrets.MY_GITHUB_TOKEN }}@github.com/blue-shell-typefaces/fonts.git ./src/assets/fonts
         docker build \
           --tag "gcr.io/$PROJECT_ID/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
