@@ -7,11 +7,11 @@
 @layer base {
     @font-face {
         font-family: Zaum;
-        src: url('Zaum-Typeface.ttf');
+        src: url('fonts/Zaum-Typeface.ttf');
     }
 
     @font-face {
         font-family: ChrastinaProGX;
-        src: url('ChrastinaProGX.ttf');
+        src: url('fonts/ChrastinaProGX.ttf');
     }
 }
