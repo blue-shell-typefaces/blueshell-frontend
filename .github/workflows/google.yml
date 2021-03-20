@@ -35,9 +35,10 @@ jobs:
 
     - name: Checkout fonts
       uses: actions/checkout@v2
-      path: ./src/assets/fonts
-      repository: blue-shell-typefaces/fonts
-      token: ${{ secrets.MY_GITHUB_TOKEN }}
+      with:
+        repository: blue-shell-typefaces/fonts
+        path: ./src/assets/fonts
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
 
     # Setup gcloud CLI
     - uses: google-github-actions/setup-gcloud@v0.2.0
