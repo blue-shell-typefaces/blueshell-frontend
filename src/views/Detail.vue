@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <Menu />
       <div>
-        <button class="bg-yellow px-3 rounded-full">Buy</button>
+        <button class="bg-yellow px-3 rounded-full" @click="buy">Buy</button>
       </div>
     </div>
     <div class="h-full">
@@ -41,7 +41,13 @@ export default {
   mounted() {
     const height = window.innerHeight / 2
     this.$refs.textarea.style.fontSize = `${height}px`
-
+  },
+  methods: {
+    buy() {
+      window.Paddle.Checkout.open({
+        product: 9726
+      })
+    }
   }
 }
 </script>
