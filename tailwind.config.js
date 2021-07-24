@@ -10,8 +10,10 @@ module.exports = {
         '1': '1px',
       },
       colors: {
-        'pink': '#f095d8',
-        'yellow': '#ff0',
+        'blue': '#2c78ff',
+        'orange': '#ff6c3d',
+        'beige': '#e4dbc8',
+        'green': '#00bb00',
       },
       cursor: {
         grab: 'grab',
@@ -19,13 +21,19 @@ module.exports = {
       },
       fontFamily: {
         'chrastina': 'ChrastinaProGX',
+        'gates': 'BS Gates Alpha 6',
         'zaum': 'Zaum',
-      }
+      },
+      inset: {
+        '1/2': '50%',
+        '1/8': '12.5%',
+      },
     },
   },
   variants: {
     extend: {
-      display: ['group-hover']
+      backgroundColor: ['checked'],
+      display: ['group-hover'],
     },
   },
   plugins: [],
