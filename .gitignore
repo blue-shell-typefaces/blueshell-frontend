@@ -2,6 +2,7 @@
 node_modules
 /dist
 /src/assets/fonts
+__pycache__/
 
 # local env files
 .env.local
