@@ -1,28 +1,28 @@
 <template>
   <div class="h-full" v-if="family">
-    <div class="flex flex-col h-full">
-      <div class="fixed w-full">
-        <div class="flex justify-between m-1">
-          <Menu />
-          <div class="flex leading-10">
-            <a href="#" class="hidden lg:block mx-5">About</a>
-            <a href="#" class="hidden lg:block mx-5">Characters</a>
-            <a href="#" class="hidden lg:block mx-5">Specimen</a>
-            <a href="#" class="hidden lg:block mx-5">Trial</a>
-            <button class="bg-orange h-10 leading-10 ml-5 rounded-full w-10" @click="showCart = !showCart">Buy</button>
+    <div class="flex flex-col float-left h-full" :class="[showCart ? 'w-3/4' : 'w-full']">
+      <div class="h-full relative">
+        <div class="left-0 right-0 sticky top-0 w-full">
+          <div class="flex justify-between p-1">
+            <Menu />
+            <div class="flex leading-10">
+              <a href="#" class="hidden lg:block mx-5">About</a>
+              <a href="#" class="hidden lg:block mx-5">Characters</a>
+              <a href="#" class="hidden lg:block mx-5">Specimen</a>
+              <a href="#" class="hidden lg:block mx-5">Trial</a>
+              <button class="bg-orange h-10 leading-10 ml-5 rounded-full w-10" @click="showCart = !showCart" v-show="!showCart">Buy</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="h-full">
         <Tester :values="properties" />
-        <div class="bottom-0 left-0 right-0 fixed">
+        <div class="bottom-0 left-0 right-0 sticky">
           <Slider :value.sync="properties.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
           <Slider :value.sync="properties.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
         </div>
       </div>
     </div>
 
-    <div class="bg-white bottom-0 fixed lg:max-w-xs overflow-y-auto p-1 right-0 top-0 w-full" v-show="showCart">
+    <div class="bg-white bottom-0 fixed overflow-y-auto p-1 right-0 top-0 w-full lg:w-1/4" v-show="showCart">
       <div class="flex h-10 leading-10 justify-between">
         <span>Buy {{ family.name }}</span>
         <button class="bg-black h-10 relative rounded-full w-10" @click="showCart = false">
@@ -122,8 +122,8 @@ export default {
       axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, data).then(({data}) => {
         window.Paddle.Checkout.open({
           override: data.url,
-        });
-      });
+        })
+      })
     },
     toggleInstance(instance) {
       if (this.cart.includes(instance)) {

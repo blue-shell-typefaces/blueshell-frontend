@@ -1,5 +1,5 @@
 <template>
-    <div class="flex h-full items-center py-32" :class="`font-${$route.params.family}`">
+    <div class="flex h-full items-center" :class="`font-${$route.params.family}`">
         <div class="bg-transparent break-normal max-h-full leading-tight placeholder-current outline-none resize-none text-center w-full"
             placeholder="Only kill"
             ref="textarea"
