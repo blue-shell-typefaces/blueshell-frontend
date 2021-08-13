@@ -1,6 +1,6 @@
 <template>
-    <div class="flex h-full items-center" :class="`font-${$route.params.family}`">
-        <div class="bg-transparent break-normal max-h-full leading-tight placeholder-current outline-none resize-none text-center w-full"
+    <div class="absolute flex inset-0 items-center overflow-y-auto" :class="`font-${$route.params.family}`">
+        <div class="bg-transparent break-normal leading-tight placeholder-current outline-none resize-none text-center w-full"
             placeholder="Only kill"
             ref="textarea"
             :style="`--wght: ${values.wght}; --mood: ${values.mood}; font-variation-settings: 'wght' var(--wght), 'mood' var(--mood);`"
@@ -8,6 +8,7 @@
             contenteditable="true"
             @input="input"
             @paste="paste"
+            @keydown="keydown"
             ></div>
     </div>
 </template>
@@ -50,13 +51,19 @@ export default {
                 textarea.offsetWidth / textarea.scrollWidth,
                 textarea.offsetHeight / textarea.scrollHeight
             )
-            const fontSize = Math.max(ratio * parseInt(textarea.style.fontSize), 10)
+            const fontSize = Math.max(ratio * parseInt(textarea.style.fontSize), 40)
             textarea.style.fontSize = `${fontSize}px`
         },
         paste(e) {
             e.preventDefault();
             const text = e.clipboardData.getData('text/plain');    
             document.execCommand('insertText', false, text)
+        },
+        keydown(e) {
+            if (e.key === 'Enter') {
+                document.execCommand('insertLineBreak')
+                e.preventDefault()
+            }
         }
     }
 }

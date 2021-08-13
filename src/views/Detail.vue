@@ -1,24 +1,22 @@
 <template>
-  <div class="h-full" v-if="family">
-    <div class="flex flex-col float-left h-full" :class="[showCart ? 'w-3/4' : 'w-full']">
-      <div class="h-full relative">
-        <div class="left-0 right-0 sticky top-0 w-full">
-          <div class="flex justify-between p-1">
-            <Menu />
-            <div class="flex leading-10">
-              <a href="#" class="hidden lg:block mx-5">About</a>
-              <a href="#" class="hidden lg:block mx-5">Characters</a>
-              <a href="#" class="hidden lg:block mx-5">Specimen</a>
-              <a href="#" class="hidden lg:block mx-5">Trial</a>
-              <button class="bg-orange h-10 leading-10 ml-5 rounded-full w-10" @click="showCart = !showCart" v-show="!showCart">Buy</button>
-            </div>
+  <div v-if="family">
+    <div class="fixed inset-0 min-h-full" :class="[showCart ? 'w-3/4' : 'w-full']">
+      <div class="left-0 right-0 sticky top-0 w-full z-10">
+        <div class="flex justify-between p-1">
+          <Menu />
+          <div class="flex leading-10">
+            <a href="#" class="hidden lg:block mx-5">About</a>
+            <a href="#" class="hidden lg:block mx-5">Characters</a>
+            <a href="#" class="hidden lg:block mx-5">Specimen</a>
+            <a href="#" class="hidden lg:block mx-5">Trial</a>
+            <button class="bg-orange h-10 leading-10 ml-5 rounded-full w-10" @click="showCart = !showCart" v-show="!showCart">Buy</button>
           </div>
         </div>
-        <Tester :values="properties" />
-        <div class="bottom-0 left-0 right-0 sticky">
-          <Slider :value.sync="properties.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
-          <Slider :value.sync="properties.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
-        </div>
+      </div>
+      <Tester :values="properties" />
+      <div class="bottom-0 left-0 right-0 absolute">
+        <Slider :value.sync="properties.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
+        <Slider :value.sync="properties.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
       </div>
     </div>
 
