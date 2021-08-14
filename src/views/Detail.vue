@@ -1,6 +1,6 @@
 <template>
   <div v-if="family">
-    <div class="fixed inset-0 min-h-full" :class="[showCart ? 'w-3/4' : 'w-full']">
+    <div class="fixed inset-0 min-h-full" :class="[showCart ? 'bg-black text-white w-3/4' : 'w-full']">
       <div class="left-0 right-0 sticky top-0 w-full z-10">
         <div class="flex justify-between p-1">
           <Menu />

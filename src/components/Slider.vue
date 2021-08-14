@@ -52,7 +52,8 @@ export default {
     },
     move(e) {
       if (this.dragging) {
-        const ratio = e.clientX / this.$refs.lane.offsetWidth
+        const left = this.$refs.lane.getBoundingClientRect().left
+        const ratio = (e.clientX - left) / this.$refs.lane.offsetWidth
         const value = Math.min(
           Math.max(
             Math.round((this.max - this.min) * ratio + this.min),

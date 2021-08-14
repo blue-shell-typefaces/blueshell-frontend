@@ -39,7 +39,6 @@ export default {
         } else {
           this.cart.push(instance)
         }
-        console.log(this.cart);
       },
     }
 }
