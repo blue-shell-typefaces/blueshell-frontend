@@ -31,7 +31,7 @@
       
       <p class="my-3">You have created your own style of {{ family.name }} typeface.</p>
 
-      <p class="my-3">Your style</p>
+      <p class="my-3">Your style {{ style }}</p>
 
       <div class="relative">
         <button class="absolute bg-black h-10  rounded-full w-10">          
@@ -39,7 +39,7 @@
           <span class="absolute border-t-1 left-1/4 -rotate-45 transform w-1/2"></span>
         </button>
 
-        <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">BS Zaum ReNa233</span>
+        <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ family.name }} {{ style }}</span>
       </div>
 
       <p class="my-3">Preset styles</p>
@@ -138,7 +138,10 @@ export default {
       //     .filter(item => item.active)
       //     .map(item => item.price)
       //     .reduce((a, b) => a + b, 0);
-    }
+    },
+    style: function () {
+      return Object.values(this.properties).join('')
+    },
   },
   beforeRouteUpdate(to, from, next) {
     this.showCart = false
