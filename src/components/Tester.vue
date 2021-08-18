@@ -16,6 +16,8 @@
 <style scoped>
 [contenteditable=true] {
   font-family: inherit !important;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 [contenteditable=true]:empty:before{
