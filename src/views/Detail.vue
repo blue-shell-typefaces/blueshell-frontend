@@ -14,7 +14,7 @@
         </div>
       </div>
       <Tester :values="properties" />
-      <div class="absolute bottom-0 group left-0 right-0">
+      <div class="absolute bottom-0 left-0 right-0">
         <Slider v-model="properties.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
         <Slider v-model="properties.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
       </div>
