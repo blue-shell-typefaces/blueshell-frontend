@@ -125,7 +125,6 @@ export default {
     return {
       family: null,
       isCartShown: false,
-      hasCustom: true,
       items: [
         { id: 1, price: 70, name: 'Variant 1', active: false },
         { id: 2, price: 80, name: 'Variant 2', active: false },
@@ -158,7 +157,6 @@ export default {
       }
     },
     removeCustom() {
-      this.hasCustom = false
       this.cart = this.cart.filter(item => !item.custom)
     },
     getGroupName(instance) {
@@ -179,6 +177,7 @@ export default {
     },
     showCart() {
       this.isCartShown = true
+      this.removeCustom()
       this.cart.push({
         custom: true,
       })
@@ -188,9 +187,12 @@ export default {
     total() {
       return this.cart.length * this.family.stylePrice
     },
-    customStyle: function () {
+    customStyle() {
       return Object.values(this.properties).join('')
     },
+    hasCustom() {
+      return this.cart.some(item => item.custom)
+    }
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false
