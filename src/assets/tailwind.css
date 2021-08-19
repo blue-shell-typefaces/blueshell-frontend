@@ -3,3 +3,9 @@
 @tailwind components;
 
 @tailwind utilities;
+
+@layer components {
+    .delete-button:hover + span {
+        @apply bg-orange;
+    }
+}

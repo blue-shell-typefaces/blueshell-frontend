@@ -11,7 +11,7 @@
         </div>
 
         <div v-show="show">
-          <div v-for="instance in preset" :key="instance.name">
+          <div class="group" v-for="instance in preset" :key="instance.name">
             <span class="relative" @click="callback(instance)">
               <button class="absolute bg-black h-10 rounded-full w-10" v-show="cart.includes(instance)">
                 <span class="absolute bg-white h-1 left-1/2 rounded-full transform top-1/2 -translate-x-1/2 -translate-y-1/2 w-1"></span>
@@ -19,6 +19,7 @@
 
               <span class="cursor-pointer h-10 inline-block leading-10 pr-4 rounded-full" :class="[cart.includes(instance) ? 'bg-blue pl-12' : 'bg-beige ml-8 pl-4']">{{ instance.name }}</span>
             </span>
+            <span class="hidden group-hover:inline px-2">&euro;{{ family.stylePrice }}</span>
           </div>
         </div>
     </div>

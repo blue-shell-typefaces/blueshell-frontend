@@ -35,14 +35,15 @@
 
           <p class="mb-2 mt-4">Your style {{ style }}</p>
 
-          <div class="relative">
-            <button class="absolute bg-black h-10 rounded-full w-10" @click="removeCustom">          
-              <span class="absolute border-t-1 left-1/4 rotate-45 transform w-1/2"></span>
-              <span class="absolute border-t-1 left-1/4 -rotate-45 transform w-1/2"></span>
+          <span class="relative">
+            <button class="delete-button absolute bg-black group h-10 rounded-full w-10" @click="removeCustom">
+              <span class="absolute bg-white h-1 group-hover:hidden left-1/2 rounded-full transform top-1/2 -translate-x-1/2 -translate-y-1/2 w-1"></span>
+              <span class="absolute border-t-1 hidden group-hover:inline left-1/4 rotate-45 transform w-1/2"></span>
+              <span class="absolute border-t-1 hidden group-hover:inline left-1/4 -rotate-45 transform w-1/2"></span>
             </button>
 
             <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ family.name }} {{ customStyle }}</span>
-          </div>
+          </span>
         </div>
 
         <p class="mb-2 mt-4">Preset styles</p>
