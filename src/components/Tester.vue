@@ -1,6 +1,6 @@
 <template>
     <div class="absolute flex inset-0 items-center overflow-y-auto" :class="`font-${$route.params.family}`">
-        <div class="bg-transparent break-normal leading-tight placeholder-current outline-none resize-none text-center w-full"
+        <div class="bg-transparent break-normal leading-tight max-h-full outline-none text-center w-full"
             placeholder="Only kill"
             ref="textarea"
             :style="`--wght: ${values.wght}; --mood: ${values.mood}; font-variation-settings: 'wght' var(--wght), 'mood' var(--mood);`"

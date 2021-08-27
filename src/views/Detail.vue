@@ -20,7 +20,7 @@
       </div>
     </div>
 
-    <div class="bg-white bottom-0 fixed overflow-y-auto py-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
+    <div class="bg-white bottom-0 fixed overflow-y-auto pb-4 pt-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
       <div class="px-4">
         <div class="flex h-10 leading-10 justify-between">
           <span>Buy {{ family.name }}</span>
@@ -57,7 +57,7 @@
         <CustomSelect v-model="apps" :options="['1 app', '4 apps', '10+ apps']" />
 
         <label class="cursor-pointer flex items-center my-4" v-if="total > 0">
-          <input type="checkbox" name="agree" class="appearance-none bg-beige checked:bg-blue h-10 rounded-full w-10">
+          <input type="checkbox" name="agree" class="appearance-none bg-beige checked:bg-blue cursor-pointer h-10 rounded-full w-10">
           <span class="pl-2">Agree to <a class="underline" href="#">EULA</a></span>
         </label>
 
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div class="flex items-center px-4 py-2" v-if="total > 0">
+      <div class="flex items-center px-4 pt-2" v-if="total > 0">
         <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
         <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full px-4" :class="[total > 0 ? 'bg-orange' : 'bg-gray-300']">Buy</button>
       </div>
