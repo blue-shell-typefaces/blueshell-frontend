@@ -7,17 +7,17 @@
             </div>
           </div>
 
-          <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ selected }}</span>
+          <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ value }}</span>
         </div>
 
         <div v-show="show">
           <div v-for="(option, i) in options" :key="`option_${i}`">
-            <span class="relative" @click="selected = option; show = false">
-              <button class="absolute bg-black h-10 rounded-full w-10" v-show="option === selected">
+            <span class="relative" @click="$emit('input', option); show = false">
+              <button class="absolute bg-black h-10 rounded-full w-10" v-show="option === value">
                 <span class="absolute bg-white h-1 left-1/2 rounded-full transform top-1/2 -translate-x-1/2 -translate-y-1/2 w-1"></span>
               </button>
 
-              <span class="cursor-pointer h-10 inline-block leading-10 pr-4 rounded-full" :class="[option === selected ? 'bg-blue pl-12' : 'bg-beige ml-8 pl-4']">{{ option }}</span>
+              <span class="cursor-pointer h-10 inline-block leading-10 pr-4 rounded-full" :class="[option === value ? 'bg-blue pl-12' : 'bg-beige ml-8 pl-4']">{{ option }}</span>
             </span>
           </div>
         </div>
@@ -27,7 +27,7 @@
 <script>
 export default {
     name: 'CustomSelect',
-    props: ['options', 'selected'],
+    props: ['value', 'options', 'selected'],
     data() {
         return {
             show: false,

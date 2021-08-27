@@ -52,9 +52,9 @@
 
         <p class="mb-2 mt-4">Licences</p>
 
-        <CustomSelect selected="&lt;10k visitors/mth" :options="['<10k visitors/mth', '<40k visitors/mth', '>100k visitors/mth']" />
-        <CustomSelect selected="1 user" :options="['1 user', '4 users', '10+ users']" />
-        <CustomSelect selected="1 app" :options="['1 app', '4 apps', '10+ apps']" />
+        <CustomSelect v-model="visitors" :options="['<10k visitors/mth', '<40k visitors/mth', '>100k visitors/mth']" />
+        <CustomSelect v-model="users" :options="['1 user', '4 users', '10+ users']" />
+        <CustomSelect v-model="apps" :options="['1 app', '4 apps', '10+ apps']" />
 
         <label class="cursor-pointer flex items-center my-4" v-if="total > 0">
           <input type="checkbox" name="agree" class="appearance-none bg-beige checked:bg-blue h-10 rounded-full w-10">
@@ -110,6 +110,9 @@ export default {
         wght: 400,
         mood: 400,
       },
+      visitors: '<10k visitors/mth',
+      users: '1 user',
+      apps: '1 app',
     }
   },
   mounted() {
