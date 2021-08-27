@@ -13,10 +13,10 @@
           </div>
         </div>
       </div>
-      <Tester :values="properties" />
+      <Tester :values="axes" />
       <div class="absolute bottom-0 left-0 right-0">
-        <Slider v-model="properties.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
-        <Slider v-model="properties.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
+        <Slider v-model="axes.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
+        <Slider v-model="axes.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
       </div>
     </div>
 
@@ -33,7 +33,7 @@
         <div v-if="hasCustom">
           <p class="my-4">You have created your own style of {{ family.name }} typeface.</p>
 
-          <p class="mb-2 mt-4">Your style {{ style }}</p>
+          <p class="mb-2 mt-4">Your style {{ customStyle }}</p>
 
           <span class="relative">
             <button class="delete-button absolute bg-black group h-10 rounded-full w-10" @click="removeCustom">
@@ -56,15 +56,15 @@
         <CustomSelect selected="1 user" :options="['1 user', '4 users', '10+ users']" />
         <CustomSelect selected="1 app" :options="['1 app', '4 apps', '10+ apps']" />
 
-        <label class="cursor-pointer flex items-center my-4">
+        <label class="cursor-pointer flex items-center my-4" v-if="total > 0">
           <input type="checkbox" name="agree" class="appearance-none bg-beige checked:bg-blue h-10 rounded-full w-10">
           <span class="pl-2">Agree to <a class="underline" href="#">EULA</a></span>
         </label>
 
-        <p class="mb-2 mt-4">Summary</p>
+        <p class="mb-2 mt-4" v-if="total > 0">Summary</p>
       </div>
 
-      <div class="border-black border-t-2">
+      <div class="border-black border-t-2" v-if="total > 0">
         <div class="border-black border-dashed border-b-2 px-4 py-2">
           <table class="text-sm w-full">
             <tr v-for="(item, i) in cart" :key="`item_${i}`">
@@ -75,31 +75,10 @@
         </div>
       </div>
 
-      <div class="flex items-center px-4 py-2">
+      <div class="flex items-center px-4 py-2" v-if="total > 0">
         <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
-        <button class="bg-orange inline-block h-10 leading-10 rounded-full px-4">Buy</button>
+        <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full px-4" :class="[total > 0 ? 'bg-orange' : 'bg-gray-300']">Buy</button>
       </div>
-
-      <!--
-      <form @submit.prevent="formSubmit" method="post">
-       <div v-for="item in items" :key="item.id">
-         <label>
-           <input type="checkbox" name="variant" :value="item.id" v-model="item.active">
-           {{ item.name }}
-         </label>
-       </div>
-        <div>
-          <label>Mood <input type="number" name="loc[mood]" value="500"></label>
-        </div>
-        <div>
-          <label>Wght <input type="number" name="loc[wght]" value="500"></label>
-        </div>
-        <div>
-          <input type="hidden" name="font" value="ChrastinaProGX.ttf">
-        </div>
-        <button type="submit">Pay {{ total }}&euro;</button>
-      </form>
-      -->
     </div>
   </div>
 </template>
@@ -126,13 +105,8 @@ export default {
     return {
       family: null,
       isCartShown: false,
-      items: [
-        { id: 1, price: 70, name: 'Variant 1', active: false },
-        { id: 2, price: 80, name: 'Variant 2', active: false },
-        { id: 3, price: 90, name: 'Variant 3', active: false },
-      ],
       cart: [],
-      properties: {
+      axes: {
         wght: 400,
         mood: 400,
       },
@@ -142,9 +116,8 @@ export default {
     this.family = fonts.find(font => font.slug === this.$route.params.family)
   },
   methods: {
-    formSubmit(e) {
-      const data = new FormData(e.target);
-      axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, data).then(({data}) => {
+    formSubmit() {
+      axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, this.cart).then(({data}) => {
         window.Paddle.Checkout.open({
           override: data.url,
         })
@@ -181,15 +154,16 @@ export default {
       this.removeCustom()
       this.cart.push({
         custom: true,
+        axes: this.axes
       })
-    }
+    },
   },
   computed: {
     total() {
       return this.cart.length * this.family.stylePrice
     },
     customStyle() {
-      return Object.values(this.properties).join('')
+      return Object.values(this.axes).join('')
     },
     hasCustom() {
       return this.cart.some(item => item.custom)
