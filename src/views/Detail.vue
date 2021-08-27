@@ -16,7 +16,7 @@
       <Tester :values="axes" />
       <div class="absolute bottom-0 left-0 right-0">
         <Slider v-model="axes.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
-        <Slider v-model="axes.mood" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
+        <Slider v-model="axes.wdth" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
       </div>
     </div>
 
@@ -48,7 +48,7 @@
 
         <p class="mb-2 mt-4">Preset styles</p>
 
-        <FamilyPreset :family="family" :preset="preset" :name="name" :cart="cart" :callback="toggleInstance" v-for="(preset, name) in family.presets" :key="name" />
+        <FamilyPreset :family="family" :preset="preset" :name="name" :cart="cart" :callback="toggleInstance" v-for="(preset, name) in family.groups" :key="name" />
 
         <p class="mb-2 mt-4">Licences</p>
 
@@ -90,6 +90,7 @@ import Menu from "@/components/Menu"
 import Slider from "@/components/Slider"
 import Tester from "@/components/Tester"
 import axios from "axios"
+import { shallowEqual } from "fast-equals"
 import { fonts } from "../data.js"
 
 export default {
@@ -108,7 +109,7 @@ export default {
       cart: [],
       axes: {
         wght: 400,
-        mood: 400,
+        wdth: 400,
       },
       visitors: '<10k visitors/mth',
       users: '1 user',
@@ -134,32 +135,36 @@ export default {
       }
     },
     removeCustom() {
-      this.cart = this.cart.filter(item => !item.custom)
+      this.cart = this.cart.filter(item => !this.isCustom(item))
     },
     getGroupName(instance) {
-      for (const group in this.family.presets) {
-        for (const style in this.family.presets[group]) {
-          if (instance === this.family.presets[group][style]) {
+      for (const group in this.family.groups) {
+        for (const style in this.family.groups[group]) {
+          if (shallowEqual(instance.axes, this.family.groups[group][style].axes)) {
             return group
           }
         }
       }
     },
     getItemName(instance) {
-      if (instance.custom) {
+      if (this.isCustom(instance)) {
         return `${this.family.name} ${this.customStyle}`
       } else {
-        return `${this.family.name} ${this.getGroupName(instance)} ${instance.name}`
+        return `${this.family.name} ${this.getGroupName(instance)} ${this.getPreset(instance).name}`
       }
     },
     showCart() {
       this.isCartShown = true
-      this.removeCustom()
-      this.cart.push({
-        custom: true,
-        axes: this.axes
-      })
+      this.cart = [{axes: this.axes}]
     },
+    isCustom(item) {
+      return !this.getPreset(item)
+    },
+    getPreset(item) {
+      return Object.values(this.family.groups)
+        .flat()
+        .find(preset => shallowEqual(preset.axes, item.axes))
+    }
   },
   computed: {
     total() {
@@ -169,8 +174,8 @@ export default {
       return Object.values(this.axes).join('')
     },
     hasCustom() {
-      return this.cart.some(item => item.custom)
-    }
+      return this.cart.some(item => this.isCustom(item))
+    },
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false
