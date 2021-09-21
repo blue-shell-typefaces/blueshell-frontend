@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      <div class="flex items-center px-4 pt-2" v-if="total > 0">
+      <div class="flex items-center px-4 pt-4" v-if="total > 0">
         <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
         <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full px-4" :class="[total > 0 ? 'bg-orange' : 'bg-gray-300']">Buy</button>
       </div>
@@ -171,7 +171,9 @@ export default {
       return this.cart.length * this.family.stylePrice
     },
     customStyle() {
-      return Object.values(this.axes).join('')
+      return Object.values(this.axes)
+        .map(value => value.toString().padStart(3, '0'))
+        .join('')
     },
     hasCustom() {
       return this.cart.some(item => this.isCustom(item))
