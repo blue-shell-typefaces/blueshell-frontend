@@ -25,26 +25,24 @@
     <div class="bg-beige bottom-0 fixed overflow-y-auto pb-4 pt-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
       <div class="px-4">
         <div class="flex h-10 leading-10 justify-between">
-          <span>Buffy {{ family.name }}</span>
+          <span class="uppercase">Buy {{ family.name }}</span>
           <button class="bg-black h-10 relative rounded-full w-10" @click="isCartShown = false">
             <span class="absolute border-t-1 left-1/4 rotate-45 transform w-1/2"></span>
             <span class="absolute border-t-1 left-1/4 -rotate-45 transform w-1/2"></span>
           </button>
         </div>
-        
-        <div v-if="hasCustom">
-          <p class="my-4">You have created your own style of {{ family.name }} typeface.</p>
 
-          <p class="mb-2 mt-4">Your style {{ customStyle }}</p>
+        <div>
+          <div class="flex my-2 items-center">
+            <div class="border border-black h-10 mr-3 rounded-full w-10"></div>
+            <p class="text-xs w-1/2">By dragging the sliders, you have designed your style of {{ family.name }} typeface</p>
+          </div>
 
-          <span class="relative">
-            <button class="delete-button absolute bg-black group h-10 rounded-full w-10" @click="removeCustom">
-              <span class="absolute bg-white h-1 group-hover:hidden left-1/2 rounded-full transform top-1/2 -translate-x-1/2 -translate-y-1/2 w-1"></span>
-              <span class="absolute border-t-1 hidden group-hover:inline left-1/4 rotate-45 transform w-1/2"></span>
-              <span class="absolute border-t-1 hidden group-hover:inline left-1/4 -rotate-45 transform w-1/2"></span>
-            </button>
+          <p class="mb-2 mt-4">Your style</p>
 
-            <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ family.name }} {{ customStyle }}</span>
+          <span class="cursor-pointer" @click="toggleCustom">
+            <span :class="[hasCustom ? 'bg-black' : '']" class="h-10 inline-block rounded-full w-10"></span>
+            <span class="bg-white h-10 inline-block leading-10 px-4 rounded-full">{{ family.name }} {{ customStyle }} &euro;{{ family.stylePrice }}</span>
           </span>
         </div>
 
@@ -58,10 +56,21 @@
         <CustomSelect v-model="users" :options="['1 user', '4 users', '10+ users']" />
         <CustomSelect v-model="apps" :options="['1 app', '4 apps', '10+ apps']" />
 
-        <label class="cursor-pointer flex items-center my-4" v-if="total > 0">
-          <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-blue cursor-pointer h-10 rounded-full w-10">
+        <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
+          <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-green cursor-pointer h-10 rounded-full w-10">
           <span class="pl-2">Agree to <a class="underline" href="#">EULA</a></span>
         </label>
+
+        <div class="my-2" v-if="total > 0">
+          <label class="cursor-pointer flex items-center">
+            <input v-model="newsletter" type="checkbox" name="newsletter" class="appearance-none bg-white checked:bg-green cursor-pointer h-10 rounded-full w-10">
+            <span class="pl-2">Subscribe to newsletter</span>
+          </label>
+
+          <div class="mr-10" v-if="newsletter">
+            <input type="text" name="email" placeholder="Enter e-mail address" class="bg-white h-10 leading-10 placeholder-current rounded-full text-center w-full">
+          </div>
+        </div>
 
         <p class="mb-2 mt-4" v-if="total > 0">Summary</p>
       </div>
@@ -118,7 +127,8 @@ export default {
       apps: '1 app',
       background: 'white',
       color: 'black',
-      isDragging: false
+      isDragging: false,
+      newsletter: false,
     }
   },
   mounted() {
@@ -138,6 +148,16 @@ export default {
       } else {
         this.cart.push(instance)
       }
+    },
+    toggleCustom() {
+      if (this.hasCustom) {
+        this.removeCustom()
+      } else {
+        this.addCustom()
+      }
+    },
+    addCustom() {
+      this.cart.push({axes: this.axes})
     },
     removeCustom() {
       this.cart = this.cart.filter(item => !this.isCustom(item))

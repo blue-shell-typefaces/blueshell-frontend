@@ -7,19 +7,16 @@
             </div>
           </div>
 
-          <span class="bg-blue h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ family.name }} {{ name }}</span>
+          <span class="bg-white h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ family.name }} {{ name }}</span>
         </div>
 
         <div v-show="show">
           <div class="group" v-for="instance in preset" :key="instance.name">
             <span class="relative" @click="callback(instance)">
-              <button class="absolute bg-black h-10 rounded-full w-10" v-show="cart.includes(instance)">
-                <span class="absolute bg-white h-1 left-1/2 rounded-full transform top-1/2 -translate-x-1/2 -translate-y-1/2 w-1"></span>
-              </button>
+              <button class="absolute bg-black h-10 rounded-full w-10" v-show="cart.includes(instance)"></button>
 
-              <span class="cursor-pointer h-10 inline-block leading-10 pr-4 rounded-full" :class="[cart.includes(instance) ? 'bg-blue pl-12' : 'bg-beige ml-8 pl-4']">{{ instance.name }}</span>
+              <span class="bg-white cursor-pointer h-10 inline-block leading-10 rounded-full" :class="[cart.includes(instance) ? 'pl-12' : 'bg-white ml-8 pl-4']">{{ instance.name }} <span class="h-10 inline-block leading-10 rounded-full text-center w-10">&euro;{{ family.stylePrice }}</span></span>
             </span>
-            <span class="hidden group-hover:inline px-2">&euro;{{ family.stylePrice }}</span>
           </div>
         </div>
     </div>
