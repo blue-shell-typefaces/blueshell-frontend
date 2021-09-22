@@ -22,10 +22,10 @@
       </div>
     </div>
 
-    <div class="bg-white bottom-0 fixed overflow-y-auto pb-4 pt-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
+    <div class="bg-beige bottom-0 fixed overflow-y-auto pb-4 pt-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
       <div class="px-4">
         <div class="flex h-10 leading-10 justify-between">
-          <span>Buy {{ family.name }}</span>
+          <span>Buffy {{ family.name }}</span>
           <button class="bg-black h-10 relative rounded-full w-10" @click="isCartShown = false">
             <span class="absolute border-t-1 left-1/4 rotate-45 transform w-1/2"></span>
             <span class="absolute border-t-1 left-1/4 -rotate-45 transform w-1/2"></span>
@@ -59,7 +59,7 @@
         <CustomSelect v-model="apps" :options="['1 app', '4 apps', '10+ apps']" />
 
         <label class="cursor-pointer flex items-center my-4" v-if="total > 0">
-          <input type="checkbox" name="agree" class="appearance-none bg-beige checked:bg-blue cursor-pointer h-10 rounded-full w-10">
+          <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-blue cursor-pointer h-10 rounded-full w-10">
           <span class="pl-2">Agree to <a class="underline" href="#">EULA</a></span>
         </label>
 

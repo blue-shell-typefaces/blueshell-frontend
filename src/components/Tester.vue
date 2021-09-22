@@ -1,7 +1,7 @@
 <template>
     <div class="absolute flex inset-0 items-center overflow-y-auto" :class="`font-${$route.params.family}`" :style="{ background, color }">
         <div class="bg-transparent break-normal leading-tight max-h-full outline-none text-center w-full"
-            placeholder="Only kill"
+            placeholder="Tester"
             ref="textarea"
             :style="`--wght: ${values.wght}; --mood: ${values.mood}; font-variation-settings: 'wght' var(--wght), 'mood' var(--mood);`"
             spellcheck="false"
@@ -15,17 +15,17 @@
 
 <style scoped>
 [contenteditable=true] {
-  /*font-family: inherit !important;
+  font-family: inherit !important;
   line-break: strict;
   -webkit-line-break: after-white-space;
   -webkit-user-select: text;
-  user-select: text;*/
+  user-select: text;
 }
 
 [contenteditable=true]:empty:before {
-  /* content: attr(placeholder);
+  content: attr(placeholder);
   pointer-events: none;
-  display: block; */
+  display: block;
 }
 </style>
 
