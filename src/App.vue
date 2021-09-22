@@ -1,5 +1,5 @@
 <template>
-  <div id="app" class="h-full" style="user-select: none">
+  <div id="app" class="h-full">
     <router-view/>
   </div>
 </template>

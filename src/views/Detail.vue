@@ -1,6 +1,8 @@
 <template>
   <div v-if="family">
-    <div class="fixed inset-0 min-h-full" :class="[isCartShown ? 'bg-black text-white w-3/4' : 'w-full']">
+    <div class="fixed inset-0 min-h-full"
+         :class="[isCartShown ? 'w-3/4' : 'w-full']"
+         :style="isDragging ? 'user-select: none;' : ''">
       <div class="left-0 right-0 sticky top-0 w-full z-10">
         <div class="flex justify-between px-4 py-1">
           <Menu />
@@ -13,10 +15,10 @@
           </div>
         </div>
       </div>
-      <Tester :values="axes" />
+      <Tester :values="axes" :background="background" :color="color" />
       <div class="absolute bottom-0 left-0 right-0">
-        <Slider v-model="axes.wght" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" />
-        <Slider v-model="axes.wdth" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" />
+        <Slider v-model="axes.wght" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" :background="color" @start="dragStart" @end="dragEnd" />
+        <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" @start="dragStart" @end="dragEnd" />
       </div>
     </div>
 
@@ -114,6 +116,9 @@ export default {
       visitors: '<10k visitors/mth',
       users: '1 user',
       apps: '1 app',
+      background: 'white',
+      color: 'black',
+      isDragging: false
     }
   },
   mounted() {
@@ -164,6 +169,18 @@ export default {
       return Object.values(this.family.groups)
         .flat()
         .find(preset => shallowEqual(preset.axes, item.axes))
+    },
+    sliderChange(value) {
+      const mapped = 360 * value / 1000
+      const opposite = mapped > 180 ? mapped - 180 : mapped + 180
+      this.background = `hsl(${opposite}, 100%, 50%)`
+      this.color = `hsl(${mapped}, 100%, 50%)`
+    },
+    dragStart() {
+      this.isDragging = true
+    },
+    dragEnd() {
+      this.isDragging = false
     }
   },
   computed: {
@@ -178,6 +195,23 @@ export default {
     hasCustom() {
       return this.cart.some(item => this.isCustom(item))
     },
+  },
+  watch: {
+    isCartShown(value) {
+      if (value) {
+        this.background = 'black'
+        this.color = 'white'
+      } else {
+        this.background = 'white'
+        this.color = 'black'
+      }
+    },
+    isDragging(value) {
+      if (!value) {
+        this.background = 'white'
+        this.color = 'black'
+      }
+    }
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false
