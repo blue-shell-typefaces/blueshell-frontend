@@ -7,7 +7,7 @@
           :class="[dragging ? 'bg-white' : '']"
           ref="lane">
       <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-1/2 transform -translate-y-1/2 w-10 z-10"
-            :style="`left: ${100 * value / max}%; --tw-translate-x: ${-100 * value / max}%; background: ${background}`"
+            :style="`left: ${100 * value / max}%; --tw-translate-x: ${-100 * value / max}%; background: ${background}; color: ${color}`"
             @mousedown="start"
       >{{ label }}</span>
       <span class="absolute cursor-pointer hidden lg:inline opacity-0 px-3 top-1/2 transform -translate-y-1/2" v-for="(marker, key) in markers"
@@ -28,6 +28,7 @@ export default {
     value: Number,
     markers: Object,
     background: String,
+    color: String,
   },
   data() {
     return {
