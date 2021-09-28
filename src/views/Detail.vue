@@ -16,7 +16,7 @@
         </div>
       </div>
       <Tester :values="axes" :background="background" :color="color" />
-      <div class="absolute bottom-0 left-0 right-0">
+      <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
         <Slider v-model="axes.wght" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" :background="color" :color="background"  @start="dragStart" @end="dragEnd" />
         <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" :color="background" @start="dragStart" @end="dragEnd" />
       </div>
@@ -72,18 +72,16 @@
           </div>
         </div>
 
-        <p class="mb-2 mt-4" v-if="total > 0">Summary</p>
+        <p class="mb-2 mt-8" v-if="total > 0">Summary</p>
       </div>
 
-      <div class="border-black border-t-2" v-if="total > 0">
-        <div class="border-black border-dashed border-b-2 px-4 py-2">
-          <table class="text-sm w-full">
-            <tr v-for="(item, i) in cart" :key="`item_${i}`">
-              <td>{{ getItemName(item) }}</td>
-              <td class="text-right">&euro;{{ family.stylePrice }}</td>
-            </tr>
-          </table>
-        </div>
+      <div class="bg-white px-4 py-2" v-if="total > 0">
+        <table class="text-sm w-full">
+          <tr v-for="(item, i) in cart" :key="`item_${i}`">
+            <td>{{ getItemName(item) }}</td>
+            <td class="text-right">&euro;{{ family.stylePrice }}</td>
+          </tr>
+        </table>
       </div>
 
       <div class="flex items-center px-4 pt-4" v-if="total > 0">
@@ -119,8 +117,8 @@ export default {
       isCartShown: false,
       cart: [],
       axes: {
-        wght: 400,
-        wdth: 400,
+        wght: 100,
+        wdth: 100,
       },
       visitors: '<10k visitors/mth',
       users: '1 user',
