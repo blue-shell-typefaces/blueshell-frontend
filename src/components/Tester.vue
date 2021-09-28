@@ -1,12 +1,15 @@
 <template>
-    <div class="absolute flex inset-0 items-center overflow-y-auto" :class="`font-${$route.params.family}`" :style="{ background, color }">
-        <div class="bg-transparent break-normal leading-tight max-h-full outline-none text-center w-full"
+    <div class="absolute flex inset-0 items-center overflow-y-auto"
+        :class="`font-${$route.params.family}`"
+        :style="[ globalDragging ? { background, color } : {} ]">
+        <div class="balanced-text bg-transparent break-normal leading-tight max-h-full outline-none text-center w-full"
             placeholder="Tester"
             ref="textarea"
-            :style="`--wght: ${values.wght}; --mood: ${values.mood}; font-variation-settings: 'wght' var(--wght), 'mood' var(--mood);`"
+            :style="`--wght: ${values.wght}; font-variation-settings: 'wght' var(--wght);`"
+            style="line-height: 1.15"
             spellcheck="false"
             contenteditable="true"
-            @input="input"
+            @input="refresh"
             @paste="paste"
             @keydown="keydown"
             ></div>
@@ -30,8 +33,9 @@
 </style>
 
 <script>
+import { fonts } from '../data'
 export default {
-    props: ['values', 'background', 'color'],
+    props: ['values', 'background', 'color', 'globalDragging'],
     created() {
         window.addEventListener('resize', this.windowResized)
     },
@@ -40,23 +44,24 @@ export default {
     },
     mounted() {
         this.$nextTick(() => {
-            this.$refs.textarea.style.fontSize = `${window.innerHeight / 2}px`
+            this.refresh()
         })
     },
     methods: {
         windowResized() {
-            this.$refs.textarea.style.fontSize = `${window.innerHeight / 2}px`
+            this.refresh()
         },
-        input() {
+        refresh() {
             const textarea = this.$refs.textarea
-            textarea.style.fontSize = `${window.innerHeight / 2}px`
-            // reset font size
-            const ratio = Math.min(
-                textarea.offsetWidth / textarea.scrollWidth,
-                textarea.offsetHeight / textarea.scrollHeight
-            )
-            const fontSize = Math.max(ratio * parseInt(textarea.style.fontSize), 40)
+            const min = 14
+            let fontSize = window.innerHeight / 2
+            const ratio = 0.9
             textarea.style.fontSize = `${fontSize}px`
+
+            while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && fontSize * ratio > min) {
+                fontSize *= ratio
+                textarea.style.fontSize = `${fontSize}px`
+            }
         },
         paste(e) {
             e.preventDefault();
@@ -68,6 +73,10 @@ export default {
                 document.execCommand('insertLineBreak')
                 e.preventDefault()
             }
+        },
+        resetColors() {
+            this.background = 'white'
+            this.color = 'black'
         }
     }
 }

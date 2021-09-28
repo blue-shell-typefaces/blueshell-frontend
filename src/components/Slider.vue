@@ -10,10 +10,9 @@
           ref="lane">
       <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-1/2 transform -translate-y-1/2 z-10"
             :class="[value in markers ? 'px-3' : 'w-10']"
-            :style="`left: ${100 * value / (max - min)}%; --tw-translate-x: ${-100 * value / (max - min)}%; background: ${background}; color: ${color};`"
-            ref="handle"
+            :style="{ left: `${100 * value / (max - min)}%`, '--tw-translate-x': `${-100 * value / (max - min)}%`, background, color }"
             @mousedown="start"
-      >{{ label }}</span>
+      ><span ref="handle" :class="[dragging || (!globalDragging && hover) ? '': 'opacity-0']">{{ label }}</span></span>
       <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2" v-for="(marker, key) in markers"
             :class="[(dragging || (!globalDragging && hover)) && value != key ? 'opacity-100' : 'opacity-0']"
             :key="key"

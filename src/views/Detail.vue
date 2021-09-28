@@ -11,14 +11,14 @@
             <a href="#" class="hidden lg:block mx-5">Characters</a>
             <a href="#" class="hidden lg:block mx-5">Specimen</a>
             <a href="#" class="hidden lg:block mx-5">Trial</a>
-            <button class="bg-orange h-10 leading-10 ml-5 rounded-full w-10" @click="showCart" v-show="!isCartShown">Buy</button>
+            <button class="h-10 leading-10 ml-5 rounded-full w-10" :style="{ background: color, color: background }" @click="showCart" v-show="!isCartShown">Buy</button>
           </div>
         </div>
       </div>
-      <Tester :values="axes" :background="background" :color="color" />
+      <Tester :values="axes" :background="background" :color="color" :globalDragging="isDragging" ref="tester" />
       <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
         <Slider v-model="axes.wght" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" :background="color" :color="background"  @start="dragStart" @end="dragEnd" :globalDragging="isDragging" />
-        <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" :color="background" @start="dragStart" @end="dragEnd" :globalDragging="isDragging" />
+        <!-- <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" :color="background" @start="dragStart" @end="dragEnd" :globalDragging="isDragging" /> -->
       </div>
     </div>
 
@@ -86,7 +86,7 @@
 
       <div class="flex items-center px-4 pt-4" v-if="total > 0">
         <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
-        <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full px-4" :class="[total > 0 ? 'bg-orange' : 'bg-gray-300']">Buy</button>
+        <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full px-4" :class="[!total ? 'bg-gray-300' : '']" :style="[ total ? {color: background, background: color} : {} ]">Buy</button>
       </div>
     </div>
   </div>
@@ -179,6 +179,7 @@ export default {
     showCart() {
       this.isCartShown = true
       this.cart = [{axes: this.axes}]
+      this.$refs.tester.refresh()
     },
     isCustom(item) {
       return !this.getPreset(item)
@@ -193,6 +194,7 @@ export default {
       const opposite = mapped > 180 ? mapped - 180 : mapped + 180
       this.background = `hsl(${opposite}, 100%, 50%)`
       this.color = `hsl(${mapped}, 100%, 50%)`
+
     },
     dragStart() {
       this.isDragging = true
@@ -216,20 +218,14 @@ export default {
   },
   watch: {
     isCartShown(value) {
-      if (value) {
-        this.background = 'black'
-        this.color = 'white'
-      } else {
-        this.background = 'white'
-        this.color = 'black'
-      }
+      // if (value) {
+      //   this.background = 'black'
+      //   this.color = 'white'
+      // } else {
+      //   this.background = 'white'
+      //   this.color = 'black'
+      // }
     },
-    isDragging(value) {
-      if (!value) {
-        this.background = 'white'
-        this.color = 'black'
-      }
-    }
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false

@@ -21,7 +21,7 @@ module.exports = {
       },
       fontFamily: {
         'chrastina': 'ChrastinaProGX',
-        'gates': 'BS Gates Alpha 6',
+        'gates': '"Gates Beta 1"',
         'zaum': 'Zaum',
       },
       inset: {
