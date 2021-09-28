@@ -17,8 +17,8 @@
       </div>
       <Tester :values="axes" :background="background" :color="color" />
       <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-        <Slider v-model="axes.wght" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" :background="color" :color="background"  @start="dragStart" @end="dragEnd" />
-        <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" :color="background" @start="dragStart" @end="dragEnd" />
+        <Slider v-model="axes.wght" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Black'}" :background="color" :color="background"  @start="dragStart" @end="dragEnd" :globalDragging="isDragging" />
+        <Slider v-model="axes.wdth" @input="sliderChange" :min="0" :max="1000" :markers="{0: 'Light', 400: 'Normal', 600: 'Bold', 1000: 'Bold'}" :background="color" :color="background" @start="dragStart" @end="dragEnd" :globalDragging="isDragging" />
       </div>
     </div>
 

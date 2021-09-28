@@ -4,18 +4,18 @@
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full transition duration-100"
-          :class="[dragging || hover ? 'bg-white' : '']"
+          :class="[dragging || (!globalDragging && hover) ? 'bg-white' : '']"
           @mouseover="over"
           @mouseout="out"
           ref="lane">
       <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-1/2 transform -translate-y-1/2 z-10"
             :class="[value in markers ? 'px-3' : 'w-10']"
-            :style="`left: ${left}px; background: ${background}; color: ${color};`"
+            :style="`left: ${100 * value / (max - min)}%; --tw-translate-x: ${-100 * value / (max - min)}%; background: ${background}; color: ${color};`"
             ref="handle"
             @mousedown="start"
       >{{ label }}</span>
       <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2" v-for="(marker, key) in markers"
-            :class="[(dragging || hover) && value != key ? 'opacity-100' : 'opacity-0']"
+            :class="[(dragging || (!globalDragging && hover)) && value != key ? 'opacity-100' : 'opacity-0']"
             :key="key"
             ref="markers"
             :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
@@ -34,6 +34,7 @@ export default {
     markers: Object,
     background: String,
     color: String,
+    globalDragging: Boolean,
   },
   data() {
     return {
