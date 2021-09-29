@@ -1,18 +1,19 @@
 <template>
     <div class="absolute flex inset-0 items-center overflow-y-auto"
         :class="`font-${$route.params.family}`"
-        :style="[ globalDragging ? { background, color } : {} ]">
-        <div class="balanced-text bg-transparent break-normal leading-tight max-h-full outline-none text-center w-full"
-            placeholder="Tester"
+        :style="{ background, color }">
+        <div class="balanced-text bg-transparent break-normal leading-tight max-h-full overflow-hidden outline-none text-center w-full "
+            :placeholder="placeholder"
             ref="textarea"
-            :style="`--wght: ${values.wght}; font-variation-settings: 'wght' var(--wght);`"
-            style="line-height: 1.15"
+            :style="[ { '--wght': values.wght }, this.style ]"
+            style="line-height: 1.15; font-variation-settings: 'wght' var(--wght);"
             spellcheck="false"
             contenteditable="true"
             @input="refresh"
             @paste="paste"
             @keydown="keydown"
-            ></div>
+            @focus="this.value = this.value"
+            >{{ placeholder }}</div>
     </div>
 </template>
 
@@ -21,8 +22,6 @@
   font-family: inherit !important;
   line-break: strict;
   -webkit-line-break: after-white-space;
-  -webkit-user-select: text;
-  user-select: text;
 }
 
 [contenteditable=true]:empty:before {
@@ -33,9 +32,8 @@
 </style>
 
 <script>
-import { fonts } from '../data'
 export default {
-    props: ['values', 'background', 'color', 'globalDragging'],
+    props: ['values', 'background', 'color', 'globalDragging', 'bwColors'],
     created() {
         window.addEventListener('resize', this.windowResized)
     },
@@ -45,7 +43,41 @@ export default {
     mounted() {
         this.$nextTick(() => {
             this.refresh()
+            this.$refs.textarea.focus()
         })
+    },
+    data() {
+        return {
+            fontSize: window.innerHeight / 2,
+            placeholder: 'Tester',
+        }
+    },
+    computed: {
+        style() {
+            const style = {}
+
+            if (this.fontSize < 20) {
+                Object.assign(style, { columns: 3, textAlign: 'left' })
+            } else if (this.fontSize < 30) {
+                Object.assign({ columns: 2, textAlign: 'left' })
+            } else {
+                Object.assign({ columns: 1, textAlign: 'center' })
+            }
+
+            if (this.globalDragging) {
+                Object.assign({ 'user-select': 'none' })
+            } else {
+                Object.assign({ 'user-select': 'text' })
+            }
+
+            return style
+        }
+    },
+    watch: {
+        // fontSize(value) {
+        //     alert(value)
+        //     this.$refs.textarea.style.fontSize = `${value}px`
+        // }
     },
     methods: {
         windowResized() {
@@ -54,13 +86,13 @@ export default {
         refresh() {
             const textarea = this.$refs.textarea
             const min = 14
-            let fontSize = window.innerHeight / 2
+            this.fontSize = window.innerHeight / 2
             const ratio = 0.9
-            textarea.style.fontSize = `${fontSize}px`
+            textarea.style.fontSize = `${this.fontSize}px`
 
-            while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && fontSize * ratio > min) {
-                fontSize *= ratio
-                textarea.style.fontSize = `${fontSize}px`
+            while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && this.fontSize * ratio > min) {
+                this.fontSize *= ratio
+                textarea.style.fontSize = `${this.fontSize}px`
             }
         },
         paste(e) {
@@ -74,10 +106,6 @@ export default {
                 e.preventDefault()
             }
         },
-        resetColors() {
-            this.background = 'white'
-            this.color = 'black'
-        }
     }
 }
 </script>

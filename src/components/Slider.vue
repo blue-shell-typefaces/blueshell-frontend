@@ -13,7 +13,7 @@
             :style="{ left: `${100 * value / (max - min)}%`, '--tw-translate-x': `${-100 * value / (max - min)}%`, background, color }"
             @mousedown="start"
       ><span ref="handle" :class="[dragging || (!globalDragging && hover) ? '': 'opacity-0']">{{ label }}</span></span>
-      <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2" v-for="(marker, key) in markers"
+      <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2 hover:underline" v-for="(marker, key) in markers"
             :class="[(dragging || (!globalDragging && hover)) && value != key ? 'opacity-100' : 'opacity-0']"
             :key="key"
             ref="markers"
@@ -82,6 +82,10 @@ export default {
   mounted() {
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
+    
+    // todo
+    const value = Math.round(this.posToValue(this.left))
+    this.$emit('input', value)
   },
   methods: {
     over() {
