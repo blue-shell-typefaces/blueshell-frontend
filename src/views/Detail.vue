@@ -20,7 +20,6 @@
             </div>
           </div>
         </div>
-        <!-- <Tester :values="axes" :background="testerBackground" :color="testerColor" :globalDragging="isDragging" ref="tester" /> -->
         <div class="absolute flex inset-0 items-center overflow-y-auto"
             :class="`font-${$route.params.family}`"
             :style="{ background: testerBackground, color: testerColor }">
@@ -103,10 +102,9 @@
             </div>
           </div>
           -->
-
-          <p class="mb-2 mt-8" v-if="total > 0">Summary</p>
         </div>
 
+        <p class="mb-2 mt-8 px-4" v-if="total > 0">Summary</p>
         <div class="bg-white" v-if="total > 0">
           <div class="px-4 py-2">
             <table class="text-sm w-full">
@@ -166,7 +164,7 @@ export default {
   data() {
     return {
       family: null,
-      isCartShown: true,
+      isCartShown: false,
       cart: [],
       axes: {},
       visitors: '<10k visitors/mth',
@@ -207,6 +205,7 @@ export default {
           1000
         )
       }
+      this.addCustom()
     },
     animate(timing, draw, duration) {
       let start = performance.now();
@@ -367,7 +366,7 @@ export default {
             Object.assign({ columns: 1, textAlign: 'center' })
         }
 
-        if (this.globalDragging) {
+        if (this.isDragging) {
             Object.assign({ 'user-select': 'none' })
         } else {
             Object.assign({ 'user-select': 'text' })
