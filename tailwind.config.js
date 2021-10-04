@@ -19,11 +19,6 @@ module.exports = {
         grab: 'grab',
         grabbing: 'grabbing',
       },
-      fontFamily: {
-        'chrastina': 'ChrastinaProGX',
-        'gates': '"BS Gates Beta 1"',
-        'zaum': 'Zaum',
-      },
       inset: {
         '1/2': '50%',
         '1/8': '12.5%',

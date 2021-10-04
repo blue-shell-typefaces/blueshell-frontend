@@ -3,10 +3,3 @@
 @tailwind components;
 
 @tailwind utilities;
-
-@layer base {
-    @font-face {
-        font-family: 'BS Gates Beta 1';
-        /* src: url('./fonts/BSGatesBeta1VF.ttf'); */
-    }
-}

@@ -21,9 +21,8 @@
           </div>
         </div>
         <div class="absolute flex inset-0 items-center overflow-y-auto"
-            :class="`font-${$route.params.family}`"
-            :style="{ background: testerBackground, color: testerColor }">
-            <div class="balanced-text bg-transparent break-normal leading-none max-h-full overflow-hidden outline-none text-center w-full "
+            :style="{ background: testerBackground, color: testerColor, fontFamily }">
+            <div class="balanced-text bg-transparent break-normal leading-none max-h-full overflow-hidden outline-none p-10 text-center w-full "
                 :placeholder="placeholder"
                 ref="textarea"
                 :style="[ { '--wght': axes.wght }, this.testerStyle ]"
@@ -151,7 +150,6 @@ import Menu from "@/components/Menu"
 import Slider from "@/components/Slider"
 import axios from "axios"
 import { shallowEqual } from "fast-equals"
-import { fonts } from "../data.js"
 
 export default {
   name: 'Detail',
@@ -175,37 +173,49 @@ export default {
       isDragging: false,
       newsletter: false,
       buyButtonHover: false,
-      fontSize: window.innerHeight / 2,
-      placeholder: 'Tester',
+      fontSize: 0,
+      placeholder: '',
     }
   },
   created() {
-      window.addEventListener('resize', this.windowResized)
+    window.addEventListener('resize', this.windowResized)
   },
   destroyed() {
-      window.removeEventListener('resize', this.windowResized)
+    window.removeEventListener('resize', this.windowResized)
   },
   mounted() {
     this.updateFamily()
     this.$nextTick(() => {
-        this.refresh()
-        this.$refs.textarea.focus()
+      this.refresh()
+      this.$refs.textarea.focus()
     })
+    this.addCustom()
   },
   methods: {
     updateFamily() {
-      this.family = fonts.find(font => font.slug === this.$route.params.family)
-      this.axes = {}
-      for (const [name, axis] of Object.entries(this.family.axes)) {
-        this.$set(this.axes, name, axis.min)
+      this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
+      const fontLoader = new FontFace(this.family.name, 'url(https://static.blueshell.xyz/BSGatesBeta1VF.ttf)')
+      fontLoader.load().then(fontFace => {
+        document.fonts.add(fontFace)
+        document.fonts.ready.then(() => {
+          this.placeholder = 'Tester'
+          this.axes = {}
+          for (const [name, axis] of Object.entries(this.family.axes)) {
+            this.$set(this.axes, name, axis.min)
 
-        this.animate(
-          function (timeFraction) { return timeFraction },
-          progress => this.axes[name] = progress * (axis.origin - axis.min) + axis.min,
-          1000
-        )
-      }
-      this.addCustom()
+            this.animate(
+              function (timeFraction) { return timeFraction },
+              progress => this.axes[name] = progress * (axis.origin - axis.min) + axis.min,
+              1000
+            )
+          }
+
+          this.fontSize = window.innerHeight / 2
+        })
+      }).catch(function () {
+        // todo
+      })
+
     },
     animate(timing, draw, duration) {
       let start = performance.now();
@@ -225,7 +235,12 @@ export default {
       });
     },
     formSubmit() {
-      axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, this.cart).then(({data}) => {
+      axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, {
+        cart: this.cart,
+        visitors: this.visitors,
+        users: this.users,
+        apps: this.apps,
+      }).then(({data}) => {
         window.Paddle.Checkout.open({
           override: data.url,
         })
@@ -252,13 +267,7 @@ export default {
       this.cart = this.cart.filter(item => !this.isCustom(item))
     },
     getGroupName(instance) {
-      for (const group in this.family.groups) {
-        for (const style in this.family.groups[group]) {
-          if (shallowEqual(instance.axes, this.family.groups[group][style].axes)) {
-            return group
-          }
-        }
-      }
+      return instance.group
     },
     getItemName(instance) {
       const name = [this.family.name]
@@ -305,6 +314,7 @@ export default {
         textarea.style.fontSize = `${this.fontSize}px`
 
         while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && this.fontSize * ratio > min) {
+            console.log(textarea.offsetHeight, textarea.scrollHeight)
             this.fontSize *= ratio
             textarea.style.fontSize = `${this.fontSize}px`
         }
@@ -322,6 +332,9 @@ export default {
     },
   },
   computed: {
+    fontFamily() {
+      return `"${this.family.name}"`
+    },
     total() {
       return this.cart.length * this.family.stylePrice
     },
@@ -385,7 +398,7 @@ export default {
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false
     next()
-    this.family = fonts.find(font => font.slug === this.$route.params.family)
+    this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
   }
 }
 </script>
