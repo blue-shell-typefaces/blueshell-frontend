@@ -92,7 +92,8 @@
           <!--
           <div class="my-2" v-if="total > 0">
             <label class="cursor-pointer flex items-center">
-              <input v-model="newsletter" type="checkbox" name="newsletter" class="appearance-none bg-white checked:bg-green cursor-pointer h-10 rounded-full w-10">
+              <input v-model="newsletter" type="checkbox" name=
+              "newsletter" class="appearance-none bg-white checked:bg-green cursor-pointer h-10 rounded-full w-10">
               <span class="pl-2">Subscribe to newsletter</span>
             </label>
 
@@ -175,18 +176,26 @@ export default {
       buyButtonHover: false,
       fontSize: 0,
       placeholder: '',
+      $fonts: [],
     }
   },
   created() {
+    axios.get(`https://static.blueshell.xyz/data.json`)
+      .then(({data}) => {
+        this.$fonts = data
+        this.updateFamily()
+      })
+      .catch(function () {
+        // todo error
+      })
+
     window.addEventListener('resize', this.windowResized)
   },
   destroyed() {
     window.removeEventListener('resize', this.windowResized)
   },
   mounted() {
-    this.updateFamily()
     this.$nextTick(() => {
-      this.refresh()
       this.$refs.textarea.focus()
     })
     this.addCustom()
@@ -210,7 +219,7 @@ export default {
             )
           }
 
-          this.fontSize = window.innerHeight / 2
+          this.refresh()
         })
       }).catch(function () {
         // todo
