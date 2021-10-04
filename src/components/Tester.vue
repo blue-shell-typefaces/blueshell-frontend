@@ -2,18 +2,17 @@
     <div class="absolute flex inset-0 items-center overflow-y-auto"
         :class="`font-${$route.params.family}`"
         :style="{ background, color }">
-        <div class="balanced-text bg-transparent break-normal leading-tight max-h-full overflow-hidden outline-none text-center w-full "
+        <div class="balanced-text bg-transparent break-normal leading-none max-h-full overflow-hidden outline-none text-center w-full "
             :placeholder="placeholder"
             ref="textarea"
             :style="[ { '--wght': values.wght }, this.style ]"
-            style="line-height: 1.15; font-variation-settings: 'wght' var(--wght);"
+            style="font-variation-settings: 'wght' var(--wght);"
             spellcheck="false"
             contenteditable="true"
             @input="refresh"
             @paste="paste"
             @keydown="keydown"
-            @focus="this.value = this.value"
-            >{{ placeholder }}</div>
+            >{{ values.wght }}</div>
     </div>
 </template>
 
@@ -72,12 +71,6 @@ export default {
 
             return style
         }
-    },
-    watch: {
-        // fontSize(value) {
-        //     alert(value)
-        //     this.$refs.textarea.style.fontSize = `${value}px`
-        // }
     },
     methods: {
         windowResized() {

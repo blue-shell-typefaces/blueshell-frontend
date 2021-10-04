@@ -3,142 +3,48 @@ export const fonts = [{
     slug: 'gates',
     stylePrice: 70.00,
     familyPrice: 300.00,
-    groups: {
-    }
+    axes: {
+        wght: {
+            min: 0,
+            max: 1000,
+            origin: 400,
+            markers: {
+                0: 'Light',
+                400: 'Regular',
+                600: 'Bold',
+                1000: 'Black',
+            },
+        },
+    },
+    presets: [{
+        name: 'Light',
+        values: {
+            wdth: 0,
+        },
+        group: null,
+    }, {
+        name: 'Regular',
+        values: {
+            wdth: 400,
+        },
+        group: null,
+    }, {
+        name: 'Bold',
+        values: {
+            wdth: 600,
+        },
+        group: null,
+    }, {
+        name: 'Black',
+        values: {
+            wdth: 1000,
+        },
+        group: null,
+    }],
+    groups: {}, // todo
 }, {
     name: 'Zaum',
     slug: 'zaum',
     stylePrice: 70.00,
     familyPrice: 300.00,
-    groups: {
-        'Narrow': [{
-            name: 'White',
-            axes: {
-                wght: 100,
-                wdth: 100,
-            }
-        }, {
-            name: 'Thin',
-            axes: {
-                wght: 200,
-                wdth: 100,
-            }
-        }, {
-            name: 'Light',
-            axes: {
-                wght: 300,
-                wdth: 100,
-            }
-        }, {
-            name: 'Regular',
-            axes: {
-                wght: 400,
-                wdth: 100,
-            }
-        }, {
-            name: 'Medium',
-            axes: {
-                wght: 500,
-                wdth: 100,
-            }
-        }, {
-            name: 'Bold',
-            axes: {
-                wght: 600,
-                wdth: 100,
-            }
-        }, {
-            name: 'Black',
-            axes: {
-                wght: 800,
-                wdth: 100,
-            }
-        }],
-        'Standard': [{
-            name: 'White',
-            axes: {
-                wght: 100,
-                wdth: 400,
-            }
-        }, {
-            name: 'Thin',
-            axes: {
-                wght: 200,
-                wdth: 400,
-            }
-        }, {
-            name: 'Light',
-            axes: {
-                wght: 300,
-                wdth: 400,
-            }
-        }, {
-            name: 'Regular',
-            axes: {
-                wght: 400,
-                wdth: 400,
-            }
-        }, {
-            name: 'Medium',
-            axes: {
-                wght: 500,
-                wdth: 400,
-            }
-        }, {
-            name: 'Bold',
-            axes: {
-                wght: 600,
-                wdth: 400,
-            }
-        }, {
-            name: 'Black',
-            axes: {
-                wght: 800,
-                wdth: 400,
-            }
-        }],
-        'Wide': [{
-            name: 'White',
-            axes: {
-                wght: 100,
-                wdth: 600,
-            }
-        }, {
-            name: 'Thin',
-            axes: {
-                wght: 200,
-                wdth: 600,
-            }
-        }, {
-            name: 'Light',
-            axes: {
-                wght: 300,
-                wdth: 600,
-            }
-        }, {
-            name: 'Regular',
-            axes: {
-                wght: 400,
-                wdth: 600,
-            }
-        }, {
-            name: 'Medium',
-            axes: {
-                wght: 500,
-                wdth: 600,
-            }
-        }, {
-            name: 'Bold',
-            axes: {
-                wght: 600,
-                wdth: 600,
-            }
-        }, {
-            name: 'Black',
-            axes: {
-                wght: 800,
-                wdth: 600,
-            }
-        }],
-    },
 }]

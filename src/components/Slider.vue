@@ -1,12 +1,13 @@
 <template>
   <div class="flex">
-    <select v-bind:value="value" @input="$emit('input', parseInt($event.target.value))" class="lg:hidden flex-shrink h-10 px-2 rounded-full text-white" :style="{ background }">
+    <select v-bind:value="value" @input="$emit('input', parseInt($event.target.value))" class="lg:hidden flex-shrink h-10 px-2 rounded-full text-white">
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full transition duration-100"
           :class="[dragging || (!globalDragging && hover) ? 'bg-white' : '']"
           @mouseover="over"
           @mouseout="out"
+          @mousedown="start"
           ref="lane">
       <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-1/2 transform -translate-y-1/2 z-10"
             :class="[value in markers ? 'px-3' : 'w-10']"
@@ -18,7 +19,7 @@
             :key="key"
             ref="markers"
             :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
-            @click="$emit('input', parseInt(key))">{{ marker }}</span>
+            @mousedown="$emit('input', parseInt(key))">{{ marker }}</span>
     </div>
   </div>
 </template>
@@ -49,27 +50,9 @@ export default {
       if (this.value in this.markers) {
         return this.markers[this.value]
       } else {
-        return this.value
+        return Math.round(this.value)
       }
     },
-    left() {
-      try {
-        // if (this.value in this.markers) {
-          // console.log(this.markers[this.value].getBoundingClientRect().left)
-          // return this.markers[this.value].getBoundingClientRect().left
-        // }
-
-        return Math.round(Math.max(0, Math.min(this.leftRaw, this.$refs.lane.getBoundingClientRect().width - this.$refs.handle.getBoundingClientRect().width)))
-      } catch (e) {
-        return 100
-      }
-    }
-  },
-  watch: {
-    left(left) {
-      const value = Math.round(this.posToValue(left))
-      this.$emit('input', value)
-    }
   },
   created() {
     window.addEventListener('mousemove', this.move)
@@ -83,11 +66,32 @@ export default {
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
     
-    // todo
-    const value = Math.round(this.posToValue(this.left))
-    this.$emit('input', value)
+    this.animate(
+      function (timeFraction) { return timeFraction },
+      progress => {
+        this.$emit('input', Math.round(progress * (400 - this.min) + this.min))
+      },
+      1000
+    )
   },
   methods: {
+    animate(timing, draw, duration) {
+      let start = performance.now();
+
+      requestAnimationFrame(function animate(time) {
+        let timeFraction = (time - start) / duration
+        if (timeFraction < 0) timeFraction = 0
+        if (timeFraction > 1) timeFraction = 1
+
+        let progress = timing(timeFraction)
+
+        draw(progress)
+
+        if (timeFraction < 1) {
+          requestAnimationFrame(animate)
+        }
+      });
+    },
     over() {
       this.hover = true
     },
@@ -96,29 +100,29 @@ export default {
     },
     move(e) {
       if (this.dragging) {
-        this.leftRaw = e.clientX - this.offsetLane - this.offsetHandle
+        this.$emit('input', this.posToValue(e.clientX - this.offsetLane - this.offsetHandle))
       }
     },
     start(e) {
-      this.offsetHandle = e.target === this.$refs.handle ? e.offsetX : -this.$refs.handle.width / 2
+      this.offsetHandle = e.target === this.$refs.handle ? e.offsetX : -this.handleWidth / 2
       this.leftRaw = e.clientX - this.offsetLane - this.offsetHandle
 
-      this.$emit('start')
       this.dragging = true
+      this.$emit('start')
     },
     end() {
       this.dragging = false
       this.$emit('end')
     },
     posToValue(pos) {
-      const markers = Object.keys(this.markers)
+      const markers = Object.keys(this.markers).map(value => parseInt(value))
 
       const left = this.$refs.markers[0].getBoundingClientRect().left
       const right = this.$refs.markers[0].getBoundingClientRect().right
 
       if (pos < left - this.offsetLane - this.handleWidth / 2) {
         const ratio = pos / (left - this.offsetLane - this.handleWidth / 2)
-        return ratio * markers[0]
+        return Math.round(ratio * markers[0])
       }
 
       if (pos <= right - this.offsetLane - this.handleWidth / 2) {
@@ -132,7 +136,7 @@ export default {
 
         if (pos < left - this.offsetLane - this.handleWidth / 2) {
           const ratio = (pos - prev + this.offsetLane + this.handleWidth / 2) / (left - prev)
-          return ratio * (markers[i] - markers[i - 1]) + parseInt(markers[i - 1])
+          return Math.round(ratio * (markers[i] - markers[i - 1]) + markers[i - 1])
         }
 
         if (pos >= left - this.offsetLane - this.handleWidth / 2 &&
@@ -142,6 +146,24 @@ export default {
       }
 
       return 0
+    },
+    valueToPos(value) {
+      const markers = Object.keys(this.markers).map(value => parseInt(value))
+
+      for (let i = 1; i < markers.length; i++) {
+        const left = this.$refs.markers[i].getBoundingClientRect().left
+        const right = this.$refs.markers[i].getBoundingClientRect().right
+        const prev = this.$refs.markers[i - 1].getBoundingClientRect().right
+
+        if (value < markers[i]) {
+          const ratio = (value - markers[i - 1]) / (markers[i] - markers[i - 1])
+          return ratio * (left - prev) + prev - this.offsetLane - this.handleWidth / 2
+        }
+
+        if (value === markers[i]) {
+          return left + (right - left) / 2 - this.offsetLane - this.handleWidth / 2
+        }
+      }
     }
   }
 }
