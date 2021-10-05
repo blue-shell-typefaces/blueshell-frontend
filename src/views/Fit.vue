@@ -63,7 +63,6 @@ export default {
         }, 50)
     },
     mounted() {
-        debounce(() => {}, 1)
         // generate random text
         const words = Array.from({length: this.getRandomLength(300, 1000)}, () => { return this.getRandomString(this.getRandomLength(5, 30)) })
         this.text = words.join(' ')
