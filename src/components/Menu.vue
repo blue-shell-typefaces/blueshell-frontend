@@ -11,7 +11,7 @@
             <span class="absolute border-white border-t-1 left-1/4 top-3 w-1/2"></span>
             <span class="absolute border-white border-l-1 right-1/2 top-3 transform translate-x-1/2 h-1/2"></span>
           </li>
-          <li class="bg-blue hover:bg-black h-10 leading-10 hidden rounded-full text-white group-hover:block" v-for="font in $fonts" :key="font.slug">
+          <li class="bg-blue hover:bg-black h-10 leading-10 hidden rounded-full text-white group-hover:block" v-for="font in fonts" :key="font.slug">
             <router-link class="block px-5" :to="{ name: 'detail', params: { family: font.slug } }">{{ font.name }}</router-link>
           </li>
         </ul>
@@ -19,3 +19,9 @@
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  props: ['fonts']
+}
+</script>

@@ -5,7 +5,7 @@
           :class="[isCartShown ? 'w-3/4' : 'w-full']">
         <div class="left-0 right-0 sticky top-0 w-full z-10">
           <div class="flex justify-between px-4 py-1">
-            <Menu />
+            <Menu :fonts="$fonts" />
             <div class="flex leading-10">
               <a href="#" class="hidden lg:block mx-5">About</a>
               <a href="#" class="hidden lg:block mx-5">Characters</a>
@@ -196,7 +196,7 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.$refs.textarea.focus()
+      // this.$refs.textarea.focus()
     })
     this.addCustom()
   },
@@ -233,7 +233,7 @@ export default {
         let timeFraction = (time - start) / duration
         if (timeFraction < 0) timeFraction = 0
         if (timeFraction > 1) timeFraction = 1
-
+  
         let progress = timing(timeFraction)
 
         draw(progress)
@@ -317,16 +317,20 @@ export default {
     },
     refresh() {
         const textarea = this.$refs.textarea
-        const min = 14
+        // const min = 14
         this.fontSize = window.innerHeight / 2
-        const ratio = 0.9
+        textarea.style.fontSize = `${this.fontSize}px`
+        const ratio = textarea.offsetWidth * textarea.offsetHeight / (textarea.scrollWidth * textarea.scrollHeight)
+        console.log(ratio)
+        this.fontSize *= ratio
         textarea.style.fontSize = `${this.fontSize}px`
 
-        while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && this.fontSize * ratio > min) {
-            console.log(textarea.offsetHeight, textarea.scrollHeight)
-            this.fontSize *= ratio
-            textarea.style.fontSize = `${this.fontSize}px`
-        }
+        // console.log(textarea.offsetWidth * textarea.offsetHeight, textarea.scrollWidth * textarea.scrollHeight, textarea.offsetWidth * textarea.offsetHeight / (textarea.scrollWidth * textarea.scrollHeight))
+        // while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && this.fontSize * ratio > min) {
+        //     this.fontSize *= ratio
+        //     textarea.style.fontSize = `${this.fontSize}px`
+        // }
+        // console.log(this.fontSize / fontSize)
     },
     paste(e) {
         e.preventDefault()
