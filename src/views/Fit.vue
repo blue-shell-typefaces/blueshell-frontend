@@ -6,6 +6,12 @@
     </div>
 </template>
 
+<style scoped>
+[contenteditable="true"] {
+    outline: 0;
+}
+</style>
+
 <script>
 import { debounce } from "lodash"
 
@@ -13,54 +19,11 @@ export default {
     data() {
         return {
             text: '',
-            refresh: null,
+            debouncedRefresh: null,
         }
     },
     created() {
-        this.refresh = debounce(() => {
-            const container = this.$refs.container
-            const containerWidth = container.offsetWidth
-            const containerHeight = container.offsetHeight
-            console.log(containerHeight)
-
-            const initialFontSize = containerHeight / 2
-            let fontSize = initialFontSize
-            const textarea = this.$refs.textarea
-            textarea.style.fontSize = `${fontSize}px`
-            console.log(fontSize)
-
-            // const initialOffsetWidth = textarea.offsetWidth
-            // const initialOffsetHeight = textarea.offsetHeight
-            // const initialScrollWidth = textarea.scrollWidth
-            // const initialScrollHeight = textarea.scrollHeight
-            // console.log(initialOffsetWidth, initialOffsetHeight, initialScrollWidth, initialScrollHeight)
-
-            // resize method 1
-            // const ratio = 0.9
-            // while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight)) {
-            //     fontSize *= ratio
-            //     textarea.style.fontSize = `${fontSize}px`
-            // }
-
-            // resize method 2
-            console.log('start')
-            for (let i = 0; i < 10; i++) {
-                const height = textarea.scrollWidth > containerWidth && textarea.scrollHeight < containerHeight ? textarea.scrollHeight : containerHeight
-                const width = textarea.scrollHeight > containerHeight && textarea.scrollWidth < containerWidth ? textarea.scrollWidth : containerWidth 
-
-                // console.log(width, height)
-                // console.log(textarea.scrollWidth, textarea.scrollHeight)
-
-                const ratio = Math.sqrt(width * height / (textarea.scrollWidth * textarea.scrollHeight))
-                console.log(ratio)
-                fontSize *= ratio
-                textarea.style.fontSize = `${fontSize}px`
-            }
-
-            // console.log(fontSize / initialFontSize)
-            // console.log(Math.sqrt(initialOffsetWidth * initialOffsetHeight / (initialScrollWidth * initialScrollHeight)))
-            // console.log(textarea.offsetWidth * textarea.offsetHeight / (window.innerWidth * window.innerHeight))
-        }, 50)
+        this.debouncedRefresh = debounce(this.refresh, 5)
     },
     mounted() {
         // generate random text
@@ -91,6 +54,53 @@ export default {
             const text = e.clipboardData.getData('text/plain')
             document.execCommand('insertText', false, text)
         },
+        refresh() {
+            const container = this.$refs.container
+            const containerWidth = container.offsetWidth
+            const containerHeight = container.offsetHeight
+            console.log(containerHeight)
+
+            const initialFontSize = containerHeight / 2
+            let fontSize = initialFontSize
+            const textarea = this.$refs.textarea
+            textarea.style.fontSize = `${fontSize}px`
+            console.log(fontSize)
+
+            // const initialOffsetWidth = textarea.offsetWidth
+            // const initialOffsetHeight = textarea.offsetHeight
+            // const initialScrollWidth = textarea.scrollWidth
+            // const initialScrollHeight = textarea.scrollHeight
+            // console.log(initialOffsetWidth, initialOffsetHeight, initialScrollWidth, initialScrollHeight)
+
+            // resize method 1
+            // const ratio = 0.9
+            // while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight)) {
+            //     fontSize *= ratio
+            //     textarea.style.fontSize = `${fontSize}px`
+            // }
+
+            // resize method 2
+            console.log('start')
+            for (let i = 0; i < 10; i++) {
+                const textareaScrollWidth = textarea.scrollWidth
+                const textareaScrollHeight = textarea.scrollHeight
+
+                const height = textareaScrollWidth >= containerWidth && textareaScrollHeight <= containerHeight ? textareaScrollHeight : containerHeight
+                const width = textareaScrollHeight >= containerHeight && textareaScrollWidth <= containerWidth ? textareaScrollWidth : containerWidth 
+
+                console.log(textareaScrollWidth, textareaScrollHeight)
+                console.log(containerWidth, containerHeight)
+
+                const ratio = Math.sqrt(width * height / (textareaScrollWidth * textareaScrollHeight))
+                console.log(width * height, (textareaScrollWidth * textareaScrollHeight), ratio)
+                fontSize *= ratio
+                textarea.style.fontSize = `${fontSize}px`
+            }
+
+            // console.log(fontSize / initialFontSize)
+            // console.log(Math.sqrt(initialOffsetWidth * initialOffsetHeight / (initialScrollWidth * initialScrollHeight)))
+            // console.log(textarea.offsetWidth * textarea.offsetHeight / (window.innerWidth * window.innerHeight))
+        }
     }
 }
 </script>

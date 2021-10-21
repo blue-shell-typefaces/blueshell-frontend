@@ -11,12 +11,12 @@
               <a href="#" class="hidden lg:block mx-5">Characters</a>
               <a href="#" class="hidden lg:block mx-5">Specimen</a>
               <a href="#" class="hidden lg:block mx-5">Trial</a>
-              <button class="h-10 leading-10 ml-5 rounded-full w-10"
+              <div class="cursor-pointer h-10 leading-10 ml-5 rounded-full text-center w-10"
                 :style="{ background: secondaryColor, color: primaryColor }"
                 @click="isCartShown = true"
                 @mouseover="buyButtonHover = true"
                 @mouseleave="buyButtonHover = false"
-                v-show="!isCartShown">Buy</button>
+                v-show="!isCartShown">Buy</div>
             </div>
           </div>
         </div>
@@ -43,10 +43,10 @@
         <div class="pb-4 px-4">
           <div class="flex h-10 leading-10 justify-between">
             <span class="uppercase">Buy {{ family.name }}</span>
-            <button class="close bg-black h-10 relative rounded-full text-white w-10" :style="{ '--hover-background': secondaryColor, '--hover-color': primaryColor }" @click="isCartShown = false">
-              <span class="absolute border-current border-t-1 left-1/4 rotate-45 transform w-1/2"></span>
-              <span class="absolute border-current border-t-1 left-1/4 -rotate-45 transform w-1/2"></span>
-            </button>
+            <div class="bg-black close cursor-pointer h-10 relative rounded-full text-white w-10" :style="{ '--hover-background': secondaryColor, '--hover-color': primaryColor }" @click="isCartShown = false">
+              <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
+              <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
+            </div>
           </div>
 
           <div>
