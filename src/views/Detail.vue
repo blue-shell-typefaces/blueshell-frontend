@@ -121,18 +121,18 @@
           -->
         </div>
 
-        <div class="bottom-0 bg-beige sticky w-full">
-          <div class="bg-white border-black border-dashed border-t-1" v-if="total > 0">
-            <div class="border-black border-b-1 px-4 py-2">
-              <table class="text-sm w-full">
-                <tr v-for="(item, i) in cart" :key="`summary_item_${i}`">
-                  <td>{{ getItemName(item) }}</td>
-                  <td class="text-right">&euro;{{ family.stylePrice }}</td>
-                </tr>
-              </table>
-            </div>
+        <div class="bg-white border-black border-dashed border-t-1" v-if="total > 0">
+          <div class=" px-4 py-2">
+            <table class="text-sm w-full">
+              <tr v-for="(item, i) in cart" :key="`summary_item_${i}`">
+                <td>{{ getItemName(item) }}</td>
+                <td class="text-right">&euro;{{ family.stylePrice }}</td>
+              </tr>
+            </table>
           </div>
+        </div>
 
+        <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full">
           <div class="flex items-center p-4" v-if="total > 0">
             <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
             <button @click="formSubmit" class="bg-white inline-block h-10 leading-10 rounded-full text-center w-10">Buy</button>
