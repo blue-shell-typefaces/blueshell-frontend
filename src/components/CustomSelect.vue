@@ -7,7 +7,7 @@
             </div>
           </div>
 
-          <span class="bg-white h-10 inline-block leading-10 pl-12 pr-4 rounded-full">{{ value }}</span>
+          <span class="bg-white h-10 inline-block leading-10 pl-14 pr-4 rounded-full">{{ value }}</span>
         </div>
 
         <div v-show="show">

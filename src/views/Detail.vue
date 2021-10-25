@@ -4,7 +4,7 @@
       <div class="fixed inset-0 min-h-full"
           :class="[isCartShown ? 'w-full lg:w-3/4' : 'w-full']">
         <div class="left-0 right-0 sticky top-0 w-full z-10">
-          <div class="flex justify-between px-4 py-1">
+          <div class="flex justify-between px-4 py-2">
             <Menu :fonts="$fonts" />
             <div class="flex leading-10">
               <a :href="family.specimenUrl" class="hidden lg:block mx-5">Specimen</a>
@@ -39,54 +39,71 @@
         </div>
       </div>
 
-      <div class="bg-beige bottom-0 fixed overflow-y-auto pt-1 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
+      <div class="bg-beige bottom-0 fixed overflow-y-auto pt-2 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
         <div class="pb-4 px-4">
-          <div class="flex h-10 leading-10 justify-between">
-            <span class="uppercase">Buy {{ family.name }}</span>
-            <div class="bg-black close cursor-pointer h-10 relative rounded-full text-white w-10" :style="{ '--hover-background': secondaryColor, '--hover-color': primaryColor }" @click="isCartShown = false">
+          <div class="flex h-10 items-center justify-between leading-10">
+            <span class="leading-none uppercase">Buy<br>{{ family.name }}</span>
+            <div class="cursor-pointer h-10 relative rounded-full text-black w-10" @click="isCartShown = false">
               <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
               <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
             </div>
           </div>
 
           <div>
-            <div class="flex my-2 items-center">
+            <div class="flex my-4 items-center">
               <div class="border border-black h-10 mr-3 rounded-full w-10"></div>
               <p class="text-xs w-1/2">By dragging the sliders, you have designed your style of {{ family.name }} typeface</p>
             </div>
 
-            <p class="mb-2 mt-4">Your style</p>
+            <p class="mb-2 mt-4">Your styles</p>
 
-            <div class="flex group leading-10">
-              <div @click="toggleCustom" class="flex" :class="[ hasCustom ? 'bg-white flex-grow rounded-full' : '']">
-                <div class="cursor-pointer h-10 rounded-full w-10" :class="[ hasCustom ? 'bg-black' : 'group-hover:bg-white' ]"></div>
-                <div class="bg-white cursor-pointer px-4 rounded-l-full" :class="[ hasCustom ? 'flex-grow rounded-full' : '']">{{ family.name }} {{ customStyle }}</div>
+            <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
+              <div class="cursor-pointer flex group" v-for="(item, i) in cart" :key="`cart_item_${i}`">
+                <div class="bg-white flex flex-grow items-center rounded-full">
+                  <div class="bg-white h-10 relative rounded-full text-black w-10" @click="removeCustom(item)">
+                    <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
+                  </div>
+                  <div class="px-4">{{ getItemName(item) }}</div>
+                </div>
+                <div class="bg-black h-10 leading-10 rounded-full text-center text-white w-10">&euro;{{ family.stylePrice }}</div>
               </div>
-              <div @click="toggleCustom" class="bg-white cursor-pointer h-10 rounded-r-full text-center w-10" :class="[ hasCustom ? 'rounded-full' : '']">&euro;{{ family.stylePrice }}</div>
+
+              <div class="cursor-pointer flex group" @click="addCustom">
+                <div class="group-hover:bg-white flex flex-grow items-center rounded-full">
+                  <div class="bg-white h-10 relative rounded-full text-black w-10">
+                    <span class="absolute border-current border-t-1 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-1 left-1/4 rotate-90 top-1/2 transform w-1/2"></span>
+                  </div>
+                  <div class="px-4">Add style</div>
+                </div>
+                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-center w-10">&euro;{{ family.stylePrice }}</div>
+              </div>
+            </div>
+
+            <div class="cursor-pointer flex my-4 group" @click="buyFullFamily = !buyFullFamily">
+              <div :class="buyFullFamily ? 'bg-white' : 'group-hover:bg-white'" class="flex flex-grow items-center rounded-full">
+                <div class="bg-white h-10 relative rounded-full text-black w-10" @click="removeCustom(item)">
+                  <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
+                  <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
+                </div>
+                <div class="px-4">{{ family.name }} full family</div>
+              </div>
+              <div :class="buyFullFamily ? 'bg-black text-white' : 'hidden group-hover:block'" class="h-10  leading-10 rounded-full text-center w-10">&euro;{{ family.familyPrice }}</div>
             </div>
           </div>
-
-          <p class="mb-2 mt-4">Preset styles</p>
-
-          <div class="flex group leading-10" v-for="preset in family.presets" :key="preset.name">
-            <div @click="toggleInstance(preset)" class="flex" :class="[ cart.includes(preset) ? 'bg-white flex-grow rounded-full' : '']">
-              <div class="cursor-pointer h-10 rounded-full w-10" :class="[ cart.includes(preset) ? 'bg-black' : 'group-hover:bg-white' ]"></div>
-              <div class="bg-white cursor-pointer px-4 rounded-l-full" :class="[ cart.includes(preset) ? 'flex-grow rounded-full' : '']">{{ preset.name }}</div>
-            </div>
-            <div @click="toggleInstance(preset)" class="bg-white cursor-pointer h-10 rounded-r-full text-center w-10" :class="[ cart.includes(preset) ? 'rounded-full' : '']">&euro;{{ family.stylePrice }}</div>
-          </div>
-
-          <FamilyPreset :family="family" :preset="preset" :name="name" :cart="cart" :callback="toggleInstance" v-for="(preset, name) in family.groups" :key="name" />
 
           <p class="mb-2 mt-4">Licences</p>
 
-          <CustomSelect v-model="visitors" :options="['<10k visitors/mth', '<40k visitors/mth', '>100k visitors/mth']" />
-          <CustomSelect v-model="users" :options="['1 user', '4 users', '10+ users']" />
-          <CustomSelect v-model="apps" :options="['1 app', '4 apps', '10+ apps']" />
+          <CustomSelect v-model="users" :options="['1 body', '≤3 bodies', '≤10 bodies', '>10 bodies']" />
+
+          <div class="my-4">
+            <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
+          </div>
 
           <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
-            <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-green cursor-pointer h-10 rounded-full w-10">
-            <span class="pl-2">Agree to <a class="underline" href="#">EULA</a></span>
+            <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
+            <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
           </label>
 
           <!--
@@ -104,21 +121,20 @@
           -->
         </div>
 
-        <p class="mb-2 mt-8 px-4" v-if="total > 0">Summary</p>
-        <div class="bg-white" v-if="total > 0">
-          <div class="px-4 py-2">
+        <div class="bg-white border-black border-dashed border-t-1" v-if="total > 0">
+          <div class="border-black border-b-1 px-4 py-2">
             <table class="text-sm w-full">
-              <tr v-for="(item, i) in cart" :key="`item_${i}`">
+              <tr v-for="(item, i) in cart" :key="`summary_item_${i}`">
                 <td>{{ getItemName(item) }}</td>
                 <td class="text-right">&euro;{{ family.stylePrice }}</td>
               </tr>
             </table>
           </div>
+        </div>
 
-          <div class="border-black border-dashed border-t-1 flex items-center p-4">
-            <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
-            <button @click="formSubmit" class="inline-block h-10 leading-10 rounded-full text-center w-10" :class="[!total ? 'bg-gray-300' : '']" :style="[ total ? {color: primaryColor, background: secondaryColor} : {} ]">Buy</button>
-          </div>
+        <div class=" flex items-center p-4">
+          <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
+          <button @click="formSubmit" class="bg-white inline-block h-10 leading-10 rounded-full text-center w-10" :class="[!total ? 'bg-gray-300' : '']">Buy</button>
         </div>
       </div>
     </div>
@@ -131,16 +147,10 @@
   line-break: strict;
   -webkit-line-break: after-white-space;
 }
-
-.close:hover {
-  background: var(--hover-background);
-  color: var(--hover-color);
-}
 </style>
 
 <script>
 import CustomSelect from "@/components/CustomSelect"
-import FamilyPreset from "@/components/FamilyPreset"
 import Menu from "@/components/Menu"
 import Slider from "@/components/Slider"
 import axios from "axios"
@@ -150,7 +160,6 @@ export default {
   name: 'Detail',
   components: {
     CustomSelect,
-    FamilyPreset,
     Menu,
     Slider,
   },
@@ -160,9 +169,7 @@ export default {
       isCartShown: false,
       cart: [],
       axes: {},
-      visitors: '<10k visitors/mth',
-      users: '1 user',
-      apps: '1 app',
+      users: '1 body',
       primaryColor: 'white',
       secondaryColor: 'black',
       isDragging: false,
@@ -171,6 +178,15 @@ export default {
       fontSize: 40,
       placeholder: '',
       $fonts: [],
+      buyFullFamily: false,
+      licences: {
+        'Desktop/Print': false,
+        'Web': false,
+        'App/ePub': false,
+        'Video': false,
+        'Social Media': false,
+        'Political': false,
+      }
     }
   },
   created() {
@@ -276,8 +292,8 @@ export default {
     addCustom() {
       this.cart.push({axes: this.axes})
     },
-    removeCustom() {
-      this.cart = this.cart.filter(item => !this.isCustom(item))
+    removeCustom(item) {
+      this.cart = this.cart.filter(i => i !== item)
     },
     getGroupName(instance) {
       return instance.group
