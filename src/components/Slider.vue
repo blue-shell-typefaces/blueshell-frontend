@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <select v-bind:value="value" @input="$emit('input', parseInt($event.target.value))" class="lg:hidden flex-shrink h-10 px-2 rounded-full text-white">
+    <select v-bind:value="value" @input="$emit('input', parseInt($event.target.value))" class="lg:hidden flex-shrink h-10 px-2 rounded-full">
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full transition duration-100"

@@ -2,15 +2,13 @@
   <div v-if="family">
     <div :style="isDragging ? 'user-select: none;' : ''">
       <div class="fixed inset-0 min-h-full"
-          :class="[isCartShown ? 'w-3/4' : 'w-full']">
+          :class="[isCartShown ? 'w-full lg:w-3/4' : 'w-full']">
         <div class="left-0 right-0 sticky top-0 w-full z-10">
           <div class="flex justify-between px-4 py-1">
             <Menu :fonts="$fonts" />
             <div class="flex leading-10">
-              <a href="#" class="hidden lg:block mx-5">About</a>
-              <a href="#" class="hidden lg:block mx-5">Characters</a>
-              <a href="#" class="hidden lg:block mx-5">Specimen</a>
-              <a href="#" class="hidden lg:block mx-5">Trial</a>
+              <a :href="family.specimenUrl" class="hidden lg:block mx-5">Specimen</a>
+              <a :href="family.trialUrl" class="hidden lg:block mx-5">Trial</a>
               <div class="cursor-pointer h-10 leading-10 ml-5 rounded-full text-center w-10"
                 :style="{ background: secondaryColor, color: primaryColor }"
                 @click="isCartShown = true"
@@ -20,22 +18,24 @@
             </div>
           </div>
         </div>
-        <div class="absolute flex inset-0 items-center overflow-y-auto"
-            :style="{ background: testerBackground, color: testerColor, fontFamily }">
-            <div class="balanced-text bg-transparent break-normal leading-none max-h-full overflow-hidden outline-none p-10 text-center w-full "
-                :placeholder="placeholder"
-                ref="textarea"
-                :style="[ { '--wght': axes.wght }, this.testerStyle ]"
-                style="font-variation-settings: 'wght' var(--wght);"
-                spellcheck="false"
-                contenteditable="true"
-                @input="refresh"
-                @paste="paste"
-                @keydown="keydown"
-                ></div>
+        <div class="absolute inset-0 p-10" :style="{ background: testerBackground, color: testerColor, fontFamily }">
+          <div class="flex h-full items-center w-full" ref="container">
+              <div class="balanced-text bg-transparent break-normal max-h-full outline-none text-center w-full"
+                  :placeholder="placeholder"
+                  ref="textarea"
+                  :style="testerStyle"
+                  style="font-variation-settings: 'wght' var(--wght);"
+                  spellcheck="false"
+                  contenteditable="true"
+                  @input="refresh"
+                  @paste="paste"
+                  @keydown="keydown"
+                  >{{ family.sampleText }}</div>
+          </div>
         </div>
+
         <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-          <Slider v-for="(axis, key) in family.axes" :key="key" v-model="axes[key]" @input="sliderChange" :min="axis.min" :max="axis.max" :markers="axis.markers" :background="secondaryColor" :color="primaryColor" @start="dragStart" @end="dragEnd" :globalDragging="isDragging" />
+          <Slider v-for="(axis, key) in family.axes" :key="key" v-model="axes[key]" @input="sliderChange" :min="axis.min" :max="axis.max" :markers="axis.markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
         </div>
       </div>
 
@@ -132,12 +132,6 @@
   -webkit-line-break: after-white-space;
 }
 
-[contenteditable=true]:empty:before {
-  content: attr(placeholder);
-  pointer-events: none;
-  display: block;
-}
-
 .close:hover {
   background: var(--hover-background);
   color: var(--hover-color);
@@ -174,7 +168,7 @@ export default {
       isDragging: false,
       newsletter: false,
       buyButtonHover: false,
-      fontSize: 0,
+      fontSize: 40,
       placeholder: '',
       $fonts: [],
     }
@@ -208,6 +202,16 @@ export default {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
           this.placeholder = 'Tester'
+
+          const el = this.$refs.textarea
+          const selection = window.getSelection()
+          const range = document.createRange()
+          selection.removeAllRanges()
+          range.selectNodeContents(el)
+          range.collapse(false)
+          selection.addRange(range)
+          this.$refs.textarea.focus()
+
           this.axes = {}
           for (const [name, axis] of Object.entries(this.family.axes)) {
             this.$set(this.axes, name, axis.min)
@@ -305,32 +309,52 @@ export default {
       this.primaryColor = `hsl(${opposite}, 100%, 50%)`
       this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
     },
-    dragStart() {
-      this.isDragging = true
-    },
-    dragEnd() {
-      this.isDragging = false
-      this.refresh()
-    },
     windowResized() {
         this.refresh()
     },
     refresh() {
-        const textarea = this.$refs.textarea
-        // const min = 14
-        this.fontSize = window.innerHeight / 2
-        textarea.style.fontSize = `${this.fontSize}px`
-        const ratio = textarea.offsetWidth * textarea.offsetHeight / (textarea.scrollWidth * textarea.scrollHeight)
-        console.log(ratio)
-        this.fontSize *= ratio
-        textarea.style.fontSize = `${this.fontSize}px`
+      this.fontSize = 40
 
-        // console.log(textarea.offsetWidth * textarea.offsetHeight, textarea.scrollWidth * textarea.scrollHeight, textarea.offsetWidth * textarea.offsetHeight / (textarea.scrollWidth * textarea.scrollHeight))
-        // while ((textarea.offsetWidth < textarea.scrollWidth || textarea.offsetHeight < textarea.scrollHeight) && this.fontSize * ratio > min) {
-        //     this.fontSize *= ratio
-        //     textarea.style.fontSize = `${this.fontSize}px`
-        // }
-        // console.log(this.fontSize / fontSize)
+      let ratio
+
+      do {
+        ratio = this.fit()
+      } while (ratio > 1)
+
+      do {
+        ratio = this.fit()
+      } while (ratio < 1)
+
+      do {
+        ratio = this.fit()
+      } while (ratio > 1)
+    },
+    fit() {
+      const container = this.$refs.container
+      const containerWidth = container.offsetWidth
+      const containerHeight = container.offsetHeight
+
+      const textarea = this.$refs.textarea
+
+      const textareaScrollWidth = textarea.scrollWidth
+      const textareaScrollHeight = textarea.scrollHeight
+
+      let ratio = 1
+
+      if (textareaScrollWidth > containerWidth && textareaScrollHeight > containerHeight) {
+        ratio *= Math.sqrt(containerWidth * containerHeight / (textareaScrollWidth * textareaScrollHeight))
+      } else if (textareaScrollWidth > containerWidth) {
+        ratio *= containerWidth / textareaScrollWidth
+      } else if (textareaScrollHeight > containerHeight) {
+        ratio *= Math.sqrt(containerHeight / textareaScrollHeight)
+      } else if (textareaScrollHeight < containerHeight) {
+        ratio *= Math.sqrt(containerHeight / textareaScrollHeight)
+      }
+
+      this.fontSize *= ratio
+      textarea.style.fontSize = `${Math.floor(this.fontSize)}px`
+
+      return ratio
     },
     paste(e) {
         e.preventDefault()
@@ -382,20 +406,14 @@ export default {
       }
     },
     testerStyle() {
-        const style = {}
-
-        if (this.fontSize < 20) {
-            Object.assign(style, { columns: 3, textAlign: 'left' })
-        } else if (this.fontSize < 30) {
-            Object.assign({ columns: 2, textAlign: 'left' })
-        } else {
-            Object.assign({ columns: 1, textAlign: 'center' })
-        }
+        const style = Object.fromEntries(
+          Object.entries(this.axes).map(([k, v]) => [`--${k}`, v])
+        )
 
         if (this.isDragging) {
-            Object.assign({ 'user-select': 'none' })
+          Object.assign(style, { 'user-select': 'none' })
         } else {
-            Object.assign({ 'user-select': 'text' })
+          Object.assign(style, { 'user-select': 'text' })
         }
 
         return style
@@ -404,8 +422,13 @@ export default {
   watch: {
     isCartShown() {
       this.$nextTick(function () {
-        this.refresh() // todo
+        this.refresh()
       })
+    },
+    isDragging(value) {
+      if (value === false) {
+        this.refresh()
+      }
     }
   },
   beforeRouteUpdate(to, from, next) {

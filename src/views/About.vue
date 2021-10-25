@@ -3,7 +3,7 @@
     <div class="flex justify-between">
       <Menu />
     </div>
-    Info page
+    About page
   </div>
 </template>
 
@@ -11,7 +11,7 @@
 import Menu from '@/components/Menu.vue'
 
 export default {
-  name: 'Info',
+  name: 'About',
   components: {
     Menu
   }
