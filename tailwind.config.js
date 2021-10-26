@@ -29,6 +29,7 @@ module.exports = {
     extend: {
       backgroundColor: ['checked'],
       display: ['group-hover'],
+      visibility: ['group-hover'],
     },
   },
   plugins: [],
