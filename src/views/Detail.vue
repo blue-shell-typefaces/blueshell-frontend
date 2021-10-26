@@ -21,7 +21,6 @@
         <div class="absolute inset-0 p-10" :style="{ background: testerBackground, color: testerColor, fontFamily }">
           <div class="flex h-full items-center w-full" ref="container">
               <div class="balanced-text bg-transparent break-normal max-h-full outline-none text-center w-full"
-                  :placeholder="placeholder"
                   ref="textarea"
                   :style="testerStyle"
                   style="font-variation-settings: 'wght' var(--wght);"
@@ -35,7 +34,7 @@
         </div>
 
         <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-          <Slider v-for="(axis, key) in family.axes" :key="key" v-model="axes[key]" @input="sliderChange" :min="axis.min" :max="axis.max" :markers="axis.markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
+          <Slider v-for="(axis, key) in style" :key="key" v-model="style[key]" @input="sliderChange" :min="family.axes[key].min" :max="family.axes[key].max" :markers="family.axes[key].markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
         </div>
       </div>
 
@@ -58,18 +57,18 @@
             <p class="mb-2 mt-4">Your styles</p>
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
-              <div class="cursor-pointer flex group" v-for="(item, i) in cart" :key="`cart_item_${i}`">
-                <div class="bg-white flex flex-grow items-center rounded-full">
-                  <div class="bg-white h-10 relative rounded-full text-black w-10" @click="removeCustom(item)">
+              <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s">
+                <div :class="style === s ? 'bg-black text-white' : 'bg-white'" class="flex flex-grow items-center rounded-full">
+                  <div class="h-10 relative rounded-full w-10" @click="removeStyle(s)">
                     <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="px-4">{{ getItemName(item) }}</div>
+                  <div class="px-4">{{ styleName(s) }}</div>
                 </div>
                 <div class="bg-black h-10 leading-10 rounded-full text-center text-white w-10">&euro;{{ family.stylePrice }}</div>
               </div>
 
-              <div class="cursor-pointer flex group" @click="addCustom">
+              <div class="cursor-pointer flex group" @click="addStyle">
                 <div class="group-hover:bg-white flex flex-grow items-center rounded-full">
                   <div class="bg-white h-10 relative rounded-full text-black w-10">
                     <span class="absolute border-current border-t-1 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
@@ -83,7 +82,7 @@
 
             <div class="cursor-pointer flex my-4 group" @click="buyFullFamily = !buyFullFamily">
               <div :class="buyFullFamily ? 'bg-white' : 'group-hover:bg-white'" class="flex flex-grow items-center rounded-full">
-                <div class="bg-white h-10 relative rounded-full text-black w-10" @click="removeCustom(item)">
+                <div class="bg-white h-10 relative rounded-full text-black w-10">
                   <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
                   <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
                 </div>
@@ -124,8 +123,8 @@
         <div class="bg-white border-black border-dashed border-t-1" v-if="total > 0">
           <div class=" px-4 py-2">
             <table class="text-sm w-full">
-              <tr v-for="(item, i) in cart" :key="`summary_item_${i}`">
-                <td>{{ getItemName(item) }}</td>
+              <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
+                <td>{{ styleName(style) }}</td>
                 <td class="text-right">&euro;{{ family.stylePrice }}</td>
               </tr>
             </table>
@@ -156,7 +155,6 @@ import CustomSelect from "@/components/CustomSelect"
 import Menu from "@/components/Menu"
 import Slider from "@/components/Slider"
 import axios from "axios"
-import { shallowEqual } from "fast-equals"
 
 export default {
   name: 'Detail',
@@ -170,15 +168,13 @@ export default {
       family: null,
       isCartShown: false,
       cart: [],
-      axes: {},
+      style: null,
       users: '1 body',
       primaryColor: 'white',
       secondaryColor: 'black',
       isDragging: false,
-      newsletter: false,
       buyButtonHover: false,
       fontSize: 40,
-      placeholder: '',
       $fonts: [],
       buyFullFamily: false,
       licences: {
@@ -210,7 +206,6 @@ export default {
     this.$nextTick(() => {
       // this.$refs.textarea.focus()
     })
-    this.addCustom()
   },
   methods: {
     updateFamily() {
@@ -219,8 +214,6 @@ export default {
       fontLoader.load().then(fontFace => {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
-          this.placeholder = 'Tester'
-
           const el = this.$refs.textarea
           const selection = window.getSelection()
           const range = document.createRange()
@@ -230,16 +223,18 @@ export default {
           selection.addRange(range)
           this.$refs.textarea.focus()
 
-          this.axes = {}
+          this.style = {}
           for (const [name, axis] of Object.entries(this.family.axes)) {
-            this.$set(this.axes, name, axis.min)
+            this.$set(this.style, name, axis.min)
 
             this.animate(
               function (timeFraction) { return timeFraction },
-              progress => this.axes[name] = progress * (axis.origin - axis.min) + axis.min,
+              progress => this.style[name] = progress * (axis.origin - axis.min) + axis.min,
               1000
             )
           }
+
+          this.addStyle()
 
           this.refresh()
         })
@@ -277,49 +272,13 @@ export default {
         })
       })
     },
-    toggleInstance(instance) {
-      if (this.cart.includes(instance)) {
-        this.cart = this.cart.filter(item => item !== instance)
-      } else {
-        this.cart.push(instance)
-      }
+    addStyle() {
+      const style = { ...this.style }
+      this.style = style
+      this.cart.push(style)
     },
-    toggleCustom() {
-      if (this.hasCustom) {
-        this.removeCustom()
-      } else {
-        this.addCustom()
-      }
-    },
-    addCustom() {
-      this.cart.push({axes: this.axes})
-    },
-    removeCustom(item) {
-      this.cart = this.cart.filter(i => i !== item)
-    },
-    getGroupName(instance) {
-      return instance.group
-    },
-    getItemName(instance) {
-      const name = [this.family.name]
-      if (this.isCustom(instance)) {
-        name.push(this.customStyle)
-      } else {
-        const group = this.getGroupName(instance)
-        if (group) {
-          name.push(group)
-        }
-        name.push(this.getPreset(instance).name)
-      }
-
-      return name.join(' ')
-    },
-    isCustom(item) {
-      return !this.getPreset(item)
-    },
-    getPreset(item) {
-      return Object.values(this.family.presets)
-        .find(preset => shallowEqual(preset.values, item.values))
+    removeStyle(style) {
+      this.cart = this.cart.filter(s => s !== style)
     },
     sliderChange(value) {
       const mapped = 360 * value / 1000
@@ -385,6 +344,13 @@ export default {
             e.preventDefault()
         }
     },
+    styleName(style) {
+      const values = Object.values(style)
+        .map(value => value.toString().padStart(3, '0'))
+        .join('')
+
+      return `${this.family.name} ${values}`
+    },
   },
   computed: {
     fontFamily() {
@@ -392,14 +358,6 @@ export default {
     },
     total() {
       return this.cart.length * this.family.stylePrice
-    },
-    customStyle() {
-      return Object.values(this.axes)
-        .map(value => value.toString().padStart(3, '0'))
-        .join('')
-    },
-    hasCustom() {
-      return this.cart.some(item => this.isCustom(item))
     },
     testerBackground() {
       if (this.isDragging) {
@@ -424,9 +382,16 @@ export default {
       }
     },
     testerStyle() {
-        const style = Object.fromEntries(
-          Object.entries(this.axes).map(([k, v]) => [`--${k}`, v])
-        )
+        const style = {}
+
+        if (this.style) {
+          Object.assign(
+            style,
+            Object.fromEntries(
+              Object.entries(this.style).map(([k, v]) => [`--${k}`, v])
+            )
+          )
+        }
 
         if (this.isDragging) {
           Object.assign(style, { 'user-select': 'none' })
