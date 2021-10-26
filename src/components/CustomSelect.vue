@@ -7,14 +7,14 @@
             </div>
           </div>
 
-          <span class="bg-white h-10 inline-block leading-10 pl-14 pr-4 rounded-full">{{ value }}</span>
+          <span class="bg-white h-10 inline-block leading-10 pl-14 pr-4 rounded-full">{{ modelValue }}</span>
         </div>
 
         <div v-show="show">
           <div v-for="(option, i) in options" :key="`option_${i}`">
             <div class="flex group leading-10">
-              <div @click="$emit('input', option); show = false" class="flex" :class="[ option === value ? 'bg-white rounded-full' : '']">
-                <div class="cursor-pointer h-10 rounded-full w-10" :class="[ option === value ? 'bg-black' : 'group-hover:bg-white' ]"></div>
+              <div @click="$emit('update:modelValue', option); show = false" class="flex" :class="[ option === modelValue ? 'bg-white rounded-full' : '']">
+                <div class="cursor-pointer h-10 rounded-full w-10" :class="[ option === modelValue ? 'bg-black' : 'group-hover:bg-white' ]"></div>
                 <div class="bg-white cursor-pointer px-4 rounded-full">{{ option }}</div>
               </div>
             </div>
@@ -26,7 +26,7 @@
 <script>
 export default {
     name: 'CustomSelect',
-    props: ['value', 'options', 'selected'],
+    props: ['modelValue', 'options', 'selected'],
     data() {
         return {
             show: false,

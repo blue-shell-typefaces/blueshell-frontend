@@ -1,18 +1,26 @@
 <template>
-  <div class="bg-homepage h-full p-4">
-    <div class="flex justify-between">
-      <Menu />
-    </div>
+  <div class="body">
+    <h1>Always Under Construction</h1>
   </div>
 </template>
 
-<script>
-import Menu from '@/components/Menu.vue'
-
-export default {
-  name: 'Home',
-  components: {
-    Menu
-  }
+<style scoped>
+ ::-moz-selection, ::selection {
+  background: none;
+  text-shadow: none;
+  color: turquoise;
 }
-</script>
+.body {
+  align-items: center;
+  background-color: peru;
+  color: white;
+  display: flex;
+  font-family: fantasy;
+  height: 100%;
+  text-align: center;
+  width: 100%;
+}
+h1 {
+  width: 100%;
+}
+</style>

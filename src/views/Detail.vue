@@ -63,7 +63,7 @@
                     <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="px-4">{{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible pl-1 underline">Edit</span></div>
+                  <div class="px-4">{{ styleName(s) }}</div>
                 </div>
                 <div class="bg-black h-10 leading-10 rounded-full text-center text-white w-10">&euro;{{ family.stylePrice }}</div>
               </div>
@@ -124,7 +124,7 @@
           <div class=" px-4 py-2">
             <table class="text-sm w-full">
               <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
-                <td>{{ styleName(style) }} <span class="underline">Rename</span></td>
+                <td>{{ styleName(style) }}</td>
                 <td class="text-right">&euro;{{ family.stylePrice }}</td>
               </tr>
             </table>
@@ -151,9 +151,9 @@
 </style>
 
 <script>
-import CustomSelect from "@/components/CustomSelect"
-import Menu from "@/components/Menu"
-import Slider from "@/components/Slider"
+import CustomSelect from "../components/CustomSelect.vue"
+import Menu from "../components/Menu.vue"
+import Slider from "../components/Slider.vue"
 import axios from "axios"
 
 export default {
@@ -225,7 +225,7 @@ export default {
 
           this.style = {}
           for (const [name, axis] of Object.entries(this.family.axes)) {
-            this.$set(this.style, name, axis.min)
+            // this.$set(this.style, name, axis.min)
 
             this.animate(
               function (timeFraction) { return timeFraction },
@@ -263,9 +263,7 @@ export default {
     formSubmit() {
       axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, {
         cart: this.cart,
-        visitors: this.visitors,
         users: this.users,
-        apps: this.apps,
       }).then(({data}) => {
         window.Paddle.Checkout.open({
           override: data.url,
@@ -279,9 +277,6 @@ export default {
     },
     removeStyle(style) {
       this.cart = this.cart.filter(s => s !== style)
-      if (this.style === style) {
-        this.style = this.cart[this.cart.length - 1]
-      }
     },
     sliderChange(value) {
       const mapped = 360 * value / 1000

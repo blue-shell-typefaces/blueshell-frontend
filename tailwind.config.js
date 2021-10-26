@@ -1,11 +1,8 @@
 module.exports = {
-  purge: { content: ['./public/**/*.html', './src/**/*.vue'] },
+  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
-      backgroundImage: {
-        'homepage': 'url("./illustration.png")',
-      },
       borderWidth: {
         '1': '1px',
       },
@@ -19,17 +16,12 @@ module.exports = {
         grab: 'grab',
         grabbing: 'grabbing',
       },
-      inset: {
-        '1/2': '50%',
-        '1/8': '12.5%',
-      },
     },
   },
   variants: {
     extend: {
       backgroundColor: ['checked'],
       display: ['group-hover'],
-      visibility: ['group-hover'],
     },
   },
   plugins: [],

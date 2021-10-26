@@ -1,11 +1,19 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 import App from './App.vue'
-import './assets/tailwind.css'
-import router from './router'
+import Home from './views/Home.vue'
+import Detail from './views/Detail.vue'
+import './index.css'
 
-Vue.config.productionTip = false
 
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app')
+const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+        { path: '/', name: 'Home', component: Home },
+        { path: '/:family', name: 'detail', component: Detail }
+    ]
+})
+
+createApp(App)
+    .use(router)
+    .mount('#app')
