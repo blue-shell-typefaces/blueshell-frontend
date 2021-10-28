@@ -155,8 +155,8 @@
 <style scoped>
 [contenteditable=true] {
   font-family: inherit !important;
-  line-break: strict;
-  -webkit-line-break: after-white-space;
+  /* line-break: strict;
+  -webkit-line-break: after-white-space; */
 }
 
 [contenteditable=true]::selection {
