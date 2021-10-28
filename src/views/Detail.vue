@@ -34,14 +34,16 @@
         </div>
 
         <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-          <Slider v-for="(axis, key) in style" :key="key" v-model="style[key]" @input="sliderChange" :min="family.axes[key].min" :max="family.axes[key].max" :markers="family.axes[key].markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
+          <Slider v-for="(axis, key) in style" :key="key" v-model="style[key]" v-on:update:modelValue="sliderChange" :min="family.axes[key].min" :max="family.axes[key].max" :markers="family.axes[key].markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
         </div>
       </div>
 
-      <div class="bg-beige bottom-0 fixed overflow-y-auto pt-2 right-0 top-0 w-full lg:w-1/4" v-show="isCartShown">
+      <div class="bg-beige bottom-0 fixed overflow-y-auto right-0 top-0 w-full lg:w-1/4 select-none" v-show="isCartShown">
+        <div class="pt-2 relative">
+
         <div class="pb-4 px-4">
           <div class="flex h-10 items-center justify-between leading-10">
-            <span class="leading-none uppercase">Buy<br>{{ family.name }}</span>
+            <span class="leading-none text-lg tracking-wide	uppercase">Buy {{ family.name }}</span>
             <div class="cursor-pointer h-10 relative rounded-full text-black w-10" @click="isCartShown = false">
               <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
               <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
@@ -49,23 +51,22 @@
           </div>
 
           <div>
-            <div class="flex my-4 items-center">
-              <div class="border border-black h-10 mr-3 rounded-full w-10"></div>
-              <p class="text-xs w-1/2">By dragging the sliders, you have designed your style of {{ family.name }} typeface</p>
+            <div class="flex my-1 items-center">
+              <p class="w-3/4">By dragging the sliders, you can design your style of {{ family.name }} typeface</p>
             </div>
 
             <p class="mb-2 mt-4">Your styles</p>
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s">
-                <div :class="style === s ? 'bg-black text-white' : 'bg-white'" class="flex flex-grow items-center rounded-full">
+                <div :style="[style === s ? { color: primaryColor, background: secondaryColor } : {}]" :class="style === s ? '' : 'bg-white'" class="flex flex-grow items-center rounded-full">
                   <div class="h-10 relative rounded-full w-10" @click="removeStyle(s)">
                     <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="px-4">{{ styleName(s) }}</div>
+                  <div class="px-4">{{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible">&ndash; Edit</span></div>
                 </div>
-                <div class="bg-black h-10 leading-10 rounded-full text-center text-white w-10">&euro;{{ family.stylePrice }}</div>
+                <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.stylePrice }}</div>
               </div>
 
               <div class="cursor-pointer flex group" @click="addStyle">
@@ -76,7 +77,7 @@
                   </div>
                   <div class="px-4">Add style</div>
                 </div>
-                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-center w-10">&euro;{{ family.stylePrice }}</div>
+                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.stylePrice }}</div>
               </div>
             </div>
 
@@ -88,21 +89,25 @@
                 </div>
                 <div class="px-4">{{ family.name }} full family</div>
               </div>
-              <div :class="buyFullFamily ? 'bg-black text-white' : 'hidden group-hover:block'" class="h-10  leading-10 rounded-full text-center w-10">&euro;{{ family.familyPrice }}</div>
+              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 rounded-full text-right w-12">&euro;{{ family.familyPrice }}</div>
             </div>
           </div>
 
           <p class="mb-2 mt-4">Licences</p>
 
-          <CustomSelect v-model="users" :options="['1 body', '≤3 bodies', '≤10 bodies', '>10 bodies']" />
+          <CustomSelect v-model="users" :options="['1 person', '≤3 persons', '≤10 persons', '>10 persons']" />
 
-          <div class="my-4">
+          <div class="my-3">
             <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
+            <span class="relative" :class="isPoliticalShown ? 'relative z-50' : ''">
+              <span @click="political" class="bg-white cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
+              <span class="absolute top-0 left-0 mt-9 text-sm" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
+            </span>
           </div>
 
           <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
             <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
-            <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
+            <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10" required>
           </label>
 
           <!--
@@ -120,22 +125,25 @@
           -->
         </div>
 
-        <div class="bg-white border-black border-dashed border-t-1" v-if="total > 0">
-          <div class=" px-4 py-2">
-            <table class="text-sm w-full">
-              <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
-                <td>{{ styleName(style) }}</td>
-                <td class="text-right">&euro;{{ family.stylePrice }}</td>
-              </tr>
-            </table>
+        <div class="bg-white px-4 py-2" v-if="total > 0">
+          <table class="text-sm w-full">
+            <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
+              <td>{{ styleName(style) }}</td>
+              <!-- <td><span class="underline">rename</span></td> -->
+              <td class="text-right">&euro;{{ family.stylePrice }}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full z-30">
+          <div class="flex items-center p-4" v-if="total > 0">
+            <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
+            <button @click="formSubmit" class="bg-white hover:bg-black inline-block h-10 leading-10 rounded-full text-center hover:text-white w-10">Buy</button>
           </div>
         </div>
 
-        <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full">
-          <div class="flex items-center p-4" v-if="total > 0">
-            <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
-            <button @click="formSubmit" class="bg-white inline-block h-10 leading-10 rounded-full text-center w-10">Buy</button>
-          </div>
+
+        <div class="absolute cursor-pointer inset-0 bg-orange z-40" :class="isPoliticalShown ? '' : 'hidden'" @click="isPoliticalShown = false"></div>
         </div>
       </div>
     </div>
@@ -169,7 +177,7 @@ export default {
       isCartShown: false,
       cart: [],
       style: null,
-      users: '1 body',
+      users: '1 person',
       primaryColor: 'white',
       secondaryColor: 'black',
       isDragging: false,
@@ -177,18 +185,18 @@ export default {
       fontSize: 40,
       $fonts: [],
       buyFullFamily: false,
+      isPoliticalShown: false,
       licences: {
         'Desktop/Print': false,
         'Web': false,
         'App/ePub': false,
         'Video': false,
         'Social Media': false,
-        'Political': false,
       }
     }
   },
   created() {
-    axios.get(`https://static.blueshell.xyz/data.json`)
+    axios.get(`${import.meta.env.VITE_STATIC_URL}/data.json`)
       .then(({data}) => {
         this.$fonts = data
         this.updateFamily()
@@ -210,7 +218,7 @@ export default {
   methods: {
     updateFamily() {
       this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
-      const fontLoader = new FontFace(this.family.name, 'url(https://static.blueshell.xyz/BSGatesBeta1VF.ttf)')
+      const fontLoader = new FontFace(this.family.name, `url(${import.meta.env.VITE_STATIC_URL}/${this.family.filename})`)
       fontLoader.load().then(fontFace => {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
@@ -225,8 +233,6 @@ export default {
 
           this.style = {}
           for (const [name, axis] of Object.entries(this.family.axes)) {
-            // this.$set(this.style, name, axis.min)
-
             this.animate(
               function (timeFraction) { return timeFraction },
               progress => this.style[name] = progress * (axis.origin - axis.min) + axis.min,
@@ -261,9 +267,13 @@ export default {
       });
     },
     formSubmit() {
-      axios.post(`${process.env.VUE_APP_API_URL}/pay-link`, {
+      this.buyClicked = true
+      axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
+        slug: this.family.slug,
         cart: this.cart,
         users: this.users,
+        licences: this.licences,
+        buyFullFamily: this.buyFullFamily,
       }).then(({data}) => {
         window.Paddle.Checkout.open({
           override: data.url,
@@ -349,6 +359,9 @@ export default {
 
       return `${this.family.name} ${values}`
     },
+    political() {
+      this.isPoliticalShown = !this.isPoliticalShown
+    },
   },
   computed: {
     fontFamily() {
@@ -360,6 +373,14 @@ export default {
     testerBackground() {
       if (this.isDragging) {
         return this.primaryColor
+      }
+
+      if (this.buyClicked) {          
+        this.animate(
+          function (timeFraction) { return timeFraction },
+          progress => this.style[name] = progress * (axis.origin - axis.min) + axis.min,
+          1000
+        )
       }
 
       if (this.buyButtonHover || this.isCartShown) {
@@ -410,7 +431,17 @@ export default {
       if (value === false) {
         this.refresh()
       }
-    }
+    },
+    style(newStyle) {
+      const key = Object.keys(newStyle)[0]
+      const value = newStyle[key]
+      console.log(value)
+
+      const mapped = 360 * value / 1000
+      const opposite = mapped > 180 ? mapped - 180 : mapped + 180
+      this.primaryColor = `hsl(${opposite}, 100%, 50%)`
+      this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
+    },
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false

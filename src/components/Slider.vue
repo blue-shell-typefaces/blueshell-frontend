@@ -64,7 +64,6 @@ export default {
     window.removeEventListener('mouseup', this.end)
   },
   mounted() {
-    console.log(this.markers)
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
     
@@ -102,8 +101,6 @@ export default {
     },
     move(e) {
       if (this.dragging) {
-        // console.log(e.clientX - this.offsetLane - this.offsetHandle)
-        console.log(this.posToValue(e.clientX - this.offsetLane - this.offsetHandle))
         this.$emit('update:modelValue', this.posToValue(e.clientX - this.offsetLane - this.offsetHandle))
       }
     },
@@ -120,8 +117,6 @@ export default {
     },
     posToValue(pos) {
       const markers = Object.keys(this.markers).map(value => parseInt(value))
-
-      console.log(markers)
 
       const left = this.markerRefs[0].getBoundingClientRect().left
       const right = this.markerRefs[0].getBoundingClientRect().right
