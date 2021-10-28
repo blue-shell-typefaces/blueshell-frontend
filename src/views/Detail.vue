@@ -6,7 +6,7 @@
         <div class="left-0 right-0 sticky top-0 w-full z-10">
           <div class="flex justify-between items-center px-4 py-2">
 
-            <div class="group">
+            <div class="group" :class="isCartShown ? 'hidden' : ''">
               <span class="cursor-pointer uppercase">Menu</span>
               <div class="absolute hidden group-hover:block ">
                 <div><span class="cursor-pointer hover:underline">About</span></div>
@@ -49,7 +49,7 @@
       </div>
 
       <div class="bg-beige bottom-0 fixed overflow-y-auto right-0 top-0 w-full lg:w-1/4 select-none" v-show="isCartShown">
-        <div class="pt-2 relative h-full">
+        <div class="pt-2 relative min-h-full">
 
           <div class="pb-4 px-4">
             <div class="flex h-10 items-center justify-between leading-10">
@@ -69,7 +69,7 @@
 
               <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
                 <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s">
-                  <div :style="[style === s ? { color: primaryColor, background: secondaryColor } : {}]" :class="style === s ? '' : 'bg-white'" class="flex flex-grow items-center rounded-full">
+                  <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center rounded-full">
                     <div class="h-10 relative rounded-full w-10" @click="removeStyle(s)">
                       <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                       <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
@@ -123,11 +123,18 @@
 
           <div class="bg-white px-4 py-2" v-if="total > 0">
             <table class="text-sm w-full">
-              <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
-                <td>{{ styleName(style) }}</td>
-                <!-- <td><span class="underline">rename</span></td> -->
-                <td class="text-right">&euro;{{ family.stylePrice }}</td>
-              </tr>
+              <tbody v-if="buyFullFamily">
+                <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
+                  <td>{{ styleName(style) }}</td>
+                  <td class="text-right">&euro;{{ family.stylePrice }}</td>
+                </tr>
+              </tbody>
+              <tbody v-else>
+                <tr>
+                  <td>{{ family.name }} full family</td>
+                  <td class="text-right">&euro;{{ family.familyPrice }}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
@@ -162,6 +169,7 @@
 import CustomSelect from "../components/CustomSelect.vue"
 import Slider from "../components/Slider.vue"
 import axios from "axios"
+import { reactive } from "vue"
 
 export default {
   name: 'Detail',
@@ -180,7 +188,7 @@ export default {
       secondaryColor: 'black',
       isDragging: false,
       buyButtonHover: false,
-      fontSize: 40,
+      fontSize: 0,
       $fonts: [],
       buyFullFamily: false,
       isPoliticalShown: false,
@@ -210,11 +218,6 @@ export default {
   destroyed() {
     window.removeEventListener('resize', this.windowResized)
   },
-  mounted() {
-    this.$nextTick(() => {
-      // this.$refs.textarea.focus()
-    })
-  },
   methods: {
     updateFamily() {
       this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
@@ -223,29 +226,47 @@ export default {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
           this.sampleText = this.family.sampleText
-          const el = this.$refs.textarea
-          const selection = window.getSelection()
-          const range = document.createRange()
-          selection.removeAllRanges()
-          range.selectNodeContents(el)
-          range.collapse(false)
-          selection.addRange(range)
-          this.$refs.textarea.focus()
+          this.$nextTick(() => {
+            const style = {}
+            Object.keys(this.family.axes).forEach(name => {
+              style[name] = this.family.axes[name].origin
+            })
 
-          this.style = {}
-          for (const [name, axis] of Object.entries(this.family.axes)) {
-            this.animate(
-              function (t) {
-                return t * t * (3.0 - 2.0 * t);
-              },
-              progress => this.style[name] = progress * (axis.origin - axis.min) + axis.min,
-              1000
-            )
-          }
+            this.style = reactive(style)
 
-          this.addStyle()
+            this.refresh()
 
-          this.refresh()
+            Object.keys(this.family.axes).forEach(name => {
+              this.style[name] = 0
+            })
+
+            for (const [name, axis] of Object.entries(this.family.axes)) {
+              setTimeout(() => {
+                this.animate(
+                  function (t) {
+                    return t * t * (3.0 - 2.0 * t);
+                  },
+                  progress => {
+                    const value = progress * (axis.origin - axis.min) + axis.min
+                    this.sliderChange(value)
+                    this.style[name] = value
+                  },
+                  1200
+                )
+              }, 500)
+            }
+
+            const el = this.$refs.textarea
+            const selection = window.getSelection()
+            const range = document.createRange()
+            selection.removeAllRanges()
+            range.selectNodeContents(el)
+            range.collapse(false)
+            selection.addRange(range)
+            this.$refs.textarea.focus()
+
+            this.addStyle()
+          })
         })
       }).catch(function () {
         // todo
@@ -284,9 +305,8 @@ export default {
       })
     },
     addStyle() {
-      const style = { ...this.style }
-      this.style = style
-      this.cart.push(style)
+      this.style = reactive({ ...this.style })
+      this.cart.push(this.style)
     },
     removeStyle(style) {
       this.cart = this.cart.filter(s => s !== style)
@@ -296,16 +316,12 @@ export default {
       const opposite = mapped > 180 ? mapped - 180 : mapped + 180
       this.primaryColor = `hsl(${opposite}, 100%, 50%)`
       this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
-
-      this.$el.style.setProperty('--primary-color', this.primaryColor)
-      this.$el.style.setProperty('--secondary-color', this.secondaryColor)
     },
     windowResized() {
         this.refresh()
     },
     refresh() {
-      this.fontSize = 40
-
+      this.fontSize = 1000
       let ratio
 
       do {
@@ -435,13 +451,17 @@ export default {
     style(newStyle) {
       const key = Object.keys(newStyle)[0]
       const value = newStyle[key]
-      console.log(value)
-
       const mapped = 360 * value / 1000
       const opposite = mapped > 180 ? mapped - 180 : mapped + 180
       this.primaryColor = `hsl(${opposite}, 100%, 50%)`
       this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
     },
+    primaryColor(value) {
+      this.$el.style.setProperty('--primary-color', value)
+    },
+    secondaryColor(value) {
+      this.$el.style.setProperty('--secondary-color', value)
+    }
   },
   beforeRouteUpdate(to, from, next) {
     this.isCartShown = false
