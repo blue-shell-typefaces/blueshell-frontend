@@ -33,7 +33,7 @@
               <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none text-center w-full"
                   ref="textarea"
                   :style="testerStyle"
-                  style="font-variation-settings: 'wght' var(--wght);"
+                  style="font-variation-settings: 'wght' var(--wght); word-braek: keep-all !important;"
                   spellcheck="false"
                   contenteditable="true"
                   @input="refresh"
@@ -124,22 +124,22 @@
           <div class="bg-white px-4 py-2" v-if="total > 0">
             <table class="text-sm w-full">
               <tbody v-if="buyFullFamily">
-                <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
-                  <td>{{ styleName(style) }}</td>
-                  <td class="text-right">&euro;{{ family.stylePrice }}</td>
-                </tr>
-              </tbody>
-              <tbody v-else>
                 <tr>
                   <td>{{ family.name }} full family</td>
                   <td class="text-right">&euro;{{ family.familyPrice }}</td>
                 </tr>
               </tbody>
+              <tbody v-else>
+                <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
+                  <td>{{ styleName(style) }}</td>
+                  <td class="text-right">&euro;{{ family.stylePrice }}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
-          <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full z-30">
-            <div class="flex items-center p-4" v-if="total > 0">
+          <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full z-30" v-if="total > 0">
+            <div class="flex items-center p-4">
               <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
               <button @click="formSubmit" class="bg-white hover:bg-black inline-block h-10 leading-10 rounded-full text-center hover:text-white w-10">Buy</button>
             </div>
@@ -390,7 +390,11 @@ export default {
       return `"${this.family.name}"`
     },
     total() {
-      return this.cart.length * this.family.stylePrice
+      if (this.buyFullFamily) {
+        return this.family.familyPrice
+      } else {
+        return this.cart.length * this.family.stylePrice
+      }
     },
     testerBackground() {
       if (this.isDragging) {
