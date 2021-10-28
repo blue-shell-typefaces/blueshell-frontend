@@ -9,7 +9,7 @@
           @mouseout="out"
           @mousedown="start"
           ref="lane">
-      <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-1/2 transform -translate-y-1/2 z-10"
+      <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-0 transform z-10"
             :class="[modelValue in markers ? 'px-3' : 'w-10']"
             :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%`, background, color }"
             @mousedown="start"

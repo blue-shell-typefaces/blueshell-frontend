@@ -21,13 +21,15 @@ module.exports = {
     },
     extend: {
       borderWidth: {
-        '1': '1px',
+        '1': '2px',
       },
       colors: {
         'blue': '#2c78ff',
         'orange': '#ff7a4d',
         'beige': '#e4dbc8',
         'green': '#00bb00',
+        'primary': 'var(--primary-color)',
+        'secondary': 'var(--secondary-color)',
       },
       cursor: {
         grab: 'grab',
