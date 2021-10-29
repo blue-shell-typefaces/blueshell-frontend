@@ -84,33 +84,8 @@ export default {
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
     this.offsetSimpleLane = this.$refs.simpleLane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
-
-    this.animate(
-      function (timeFraction) { return timeFraction },
-      progress => {
-        this.value = Math.round(progress * (400 - this.min) + this.min)
-      },
-      1000
-    )
   },
   methods: {
-    animate(timing, draw, duration) {
-      let start = performance.now();
-
-      requestAnimationFrame(function animate(time) {
-        let timeFraction = (time - start) / duration
-        if (timeFraction < 0) timeFraction = 0
-        if (timeFraction > 1) timeFraction = 1
-
-        let progress = timing(timeFraction)
-
-        draw(progress)
-
-        if (timeFraction < 1) {
-          requestAnimationFrame(animate)
-        }
-      });
-    },
     over() {
       this.hover = true
     },
@@ -120,7 +95,7 @@ export default {
     move(e) {
       if (this.dragging) {
         const x = e.touches ? e.touches[0].clientX : e.clientX
-        this.value = this.posToValue(x - this.offsetLane - this.offsetHandle)
+        this.$emit('update:modelValue', this.posToValue(x - this.offsetLane - this.offsetHandle))
       }
     },
     touchMove(e) {
