@@ -1,6 +1,6 @@
 <template>
   <div class="flex">
-    <select v-bind:modelValue="modelValue" @input="$emit('update:modelValue', parseInt($event.target.value))" class="lg:hidden flex-shrink h-10 px-2 rounded-full">
+    <select v-bind:modelValue="modelValue" @input="$emit('update:modelValue', parseInt($event.target.value))" class="appearance-none lg:hidden flex-shrink h-10 px-2 mr-2 rounded-full">
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full transition duration-100"
@@ -8,6 +8,7 @@
           @mouseover="over"
           @mouseout="out"
           @mousedown="start"
+          @touchstart="start"
           ref="lane">
       <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary top-0 transform z-10"
             :class="[modelValue in markers ? 'px-3' : 'w-10']"
@@ -58,15 +59,19 @@ export default {
   created() {
     window.addEventListener('mousemove', this.move)
     window.addEventListener('mouseup', this.end)
+    window.addEventListener('touchmove', this.move)
+    window.addEventListener('touchend', this.end)
   },
   destroyed() {
     window.removeEventListener('mousemove', this.move)
     window.removeEventListener('mouseup', this.end)
+    window.removeEventListener('touchmove', this.move)
+    window.removeEventListener('touchend', this.end)
   },
   mounted() {
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
-    
+
     this.animate(
       function (timeFraction) { return timeFraction },
       progress => {
