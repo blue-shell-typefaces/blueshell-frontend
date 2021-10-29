@@ -9,9 +9,11 @@
           @mouseout="out"
           @mousedown="start"
           ref="lane">
-      <span class="absolute bg-black cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-white top-0 transform z-10"
+      <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary top-0 transform z-10"
             :class="[modelValue in markers ? 'px-3' : 'w-10']"
-            :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%`, background, color }"
+            :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
+            ref="handleWrapper"
+            style="--alert-color: var(--secondary-color)"
             @mousedown="start"
       ><span ref="handle" :class="[dragging || (!globalDragging && hover) ? '': 'opacity-0']">{{ label }}</span></span>
       <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2 hover:underline" v-for="(marker, key) in markers"
@@ -32,8 +34,6 @@ export default {
     max: Number,
     modelValue: Number,
     markers: Object,
-    background: String,
-    color: String,
     globalDragging: Boolean,
   },
   data() {
@@ -164,6 +164,16 @@ export default {
         if (value === markers[i]) {
           return left + (right - left) / 2 - this.offsetLane - this.handleWidth / 2
         }
+      }
+    },
+    blink() {
+      const el = this.$refs.handleWrapper
+      if (el) {
+        el.classList.remove('animate-alert')
+        // todo
+        window.setTimeout(() => {
+          el.classList.add('animate-alert')
+        }, 100)
       }
     },
     setMarkerRef(el) {

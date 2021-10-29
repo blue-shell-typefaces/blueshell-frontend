@@ -17,8 +17,7 @@
             <div class="flex leading-10" :class="isCartShown ? 'hidden' : ''">
               <a href="#" class="hidden lg:block mx-5 hover:underline">Specimen</a>
               <a href="#" class="hidden lg:block mx-5 hover:underline">Trial</a>
-              <div class="cursor-pointer h-10 leading-10 ml-5 rounded-full text-center w-10"
-                :style="{ background: secondaryColor, color: primaryColor }"
+              <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
                 @click="isCartShown = true"
                 @mouseover="buyButtonHover = true"
                 @mouseleave="buyButtonHover = false"
@@ -44,7 +43,17 @@
         </div>
 
         <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-          <Slider v-for="(axis, key) in style" :key="key" v-model="style[key]" v-on:update:modelValue="sliderChange" :min="family.axes[key].min" :max="family.axes[key].max" :markers="family.axes[key].markers" :background="secondaryColor" :color="primaryColor" @start="isDragging = true" @end="isDragging = false" :globalDragging="isDragging" />
+          <Slider v-for="(axis, key) in style"
+            :key="key"
+            :ref="setSliderRef"
+            v-model="style[key]"
+            v-on:update:modelValue="sliderChange"
+            :min="family.axes[key].min"
+            :max="family.axes[key].max"
+            :markers="family.axes[key].markers"
+            @start="isDragging = true"
+            @end="isDragging = false"
+            :globalDragging="isDragging" />
         </div>
       </div>
 
@@ -110,14 +119,14 @@
             <div class="my-3">
               <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
               <span class="relative" :class="isPoliticalShown ? 'relative z-50' : ''">
-                <span @click="political" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
+                <span @click="isPoliticalShown = !isPoliticalShown" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
                 <span class="absolute top-0 left-0 mt-9 text-sm" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
               </span>
             </div>
 
             <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
               <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
-              <input type="checkbox" name="agree" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10" required>
+              <input type="checkbox" v-model="agree" ref="agree" style="--alert-color: red" class="appearance-none bg-white checked:!bg-black cursor-pointer h-10 rounded-full w-10">
             </label>
           </div>
 
@@ -184,6 +193,7 @@ export default {
       cart: [],
       style: null,
       users: '1 person',
+      agree: false,
       primaryColor: 'white',
       secondaryColor: 'black',
       isDragging: false,
@@ -194,6 +204,7 @@ export default {
       isPoliticalShown: false,
       isMenuShown: false,
       sampleText: '',
+      sliderRefs: [],
       licences: {
         'Desktop/Print': false,
         'Web': false,
@@ -290,23 +301,39 @@ export default {
         }
       });
     },
+    validateForm() {
+      if (!this.agree) {
+        const el = this.$refs.agree
+        el.classList.remove('animate-alert')
+        // todo
+        window.setTimeout(() => {
+          el.classList.add('animate-alert')
+        }, 100)
+        return false
+      }
+    },
     formSubmit() {
-      this.buyClicked = true
-      axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
-        slug: this.family.slug,
-        cart: this.cart,
-        users: this.users,
-        licences: this.licences,
-        buyFullFamily: this.buyFullFamily,
-      }).then(({data}) => {
-        window.Paddle.Checkout.open({
-          override: data.url,
+      if (this.validateForm()) {
+        this.buyClicked = true
+        axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
+          slug: this.family.slug,
+          cart: this.cart,
+          users: this.users,
+          licences: this.licences,
+          buyFullFamily: this.buyFullFamily,
+        }).then(({data}) => {
+          window.Paddle.Checkout.open({
+            override: data.url,
+          })
         })
-      })
+      }
     },
     addStyle() {
       this.style = reactive({ ...this.style })
       this.cart.push(this.style)
+      this.sliderRefs.forEach(slider => {
+        slider.blink()
+      })
     },
     removeStyle(style) {
       this.cart = this.cart.filter(s => s !== style)
@@ -376,14 +403,16 @@ export default {
     },
     styleName(style) {
       const values = Object.values(style)
-        .map(value => value.toString().padStart(3, '0'))
+        .map(value => Math.round(value).toString().padStart(3, '0'))
         .join('')
 
       return `${this.family.name} ${values}`
     },
-    political() {
-      this.isPoliticalShown = !this.isPoliticalShown
-    },
+    setSliderRef(el) {
+      if (el) {
+        this.sliderRefs.push(el)
+      }
+    }
   },
   computed: {
     fontFamily() {
@@ -428,8 +457,6 @@ export default {
               Object.entries(this.style).map(([k, v]) => [`--${k}`, v])
             )
           )
-
-
         }
 
         if (this.isDragging) {

@@ -24,16 +24,24 @@ module.exports = {
         '1': '2px',
       },
       colors: {
-        'blue': '#2c78ff',
+        'red': '#ff0000',
         'orange': '#ff7a4d',
         'beige': '#e4dbc8',
-        'green': '#00bb00',
         'primary': 'var(--primary-color)',
         'secondary': 'var(--secondary-color)',
       },
       cursor: {
         grab: 'grab',
         grabbing: 'grabbing',
+      },
+      animation: {
+        alert: 'alert 500ms step-end 3'
+      },
+      keyframes: {
+        alert: {
+          '0%, 100%': { backgroundColor: 'white' },
+          '50%': { backgroundColor: 'var(--alert-color)' },
+        }
       },
     },
   },
