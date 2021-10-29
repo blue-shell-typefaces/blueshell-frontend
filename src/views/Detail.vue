@@ -32,7 +32,7 @@
 
       <div class="absolute inset-0 p-10" :style="{ background: testerBackground, color: testerColor, fontFamily }">
         <div class="flex h-full items-center w-full" ref="container">
-            <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none text-center w-full"
+            <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none text-center w-full whitespace-nowrap"
                 :class="isDragging ? '' : 'select-auto'"
                 ref="textarea"
                 :style="testerStyle"
@@ -167,8 +167,6 @@
 <style scoped>
 [contenteditable=true] {
   font-family: inherit !important;
-  /* line-break: strict;
-  -webkit-line-break: after-white-space; */
 }
 
 [contenteditable=true]::selection {
