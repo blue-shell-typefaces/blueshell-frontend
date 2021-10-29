@@ -83,7 +83,7 @@
                       <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                       <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                     </div>
-                    <div class="px-4">{{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible">&ndash; Edit</span></div>
+                    <div class="px-4">{{ family.name }} {{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible">&ndash; Edit</span></div>
                   </div>
                   <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.stylePrice }}</div>
                 </div>
@@ -126,7 +126,7 @@
 
             <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
               <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
-              <input type="checkbox" v-model="agree" ref="agree" style="--alert-color: red" class="appearance-none bg-white checked:!bg-black cursor-pointer h-10 rounded-full w-10">
+              <input type="checkbox" v-model="agree" ref="agree" style="--alert-color: red" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
             </label>
           </div>
 
@@ -139,8 +139,8 @@
                 </tr>
               </tbody>
               <tbody v-else>
-                <tr v-for="(style, i) in cart" :key="`summary_item_${i}`">
-                  <td>{{ styleName(style) }}</td>
+                <tr v-for="(style, i) in filteredCart" :key="`summary_item_${i}`">
+                  <td>{{ family.name }} {{ styleName(style) }}</td>
                   <td class="text-right">&euro;{{ family.stylePrice }}</td>
                 </tr>
               </tbody>
@@ -406,7 +406,7 @@ export default {
         .map(value => Math.round(value).toString().padStart(3, '0'))
         .join('')
 
-      return `${this.family.name} ${values}`
+      return values
     },
     setSliderRef(el) {
       if (el) {
@@ -415,6 +415,15 @@ export default {
     }
   },
   computed: {
+    filteredCart() {
+      const set = new Set()
+      return this.cart.filter(style => {
+        const name = this.styleName(style)
+        const result = !set.has(name)
+        set.add(name)
+        return result
+      })
+    },
     fontFamily() {
       return `"${this.family.name}"`
     },
@@ -422,7 +431,7 @@ export default {
       if (this.buyFullFamily) {
         return this.family.familyPrice
       } else {
-        return this.cart.length * this.family.stylePrice
+        return this.filteredCart.length * this.family.stylePrice
       }
     },
     testerBackground() {
