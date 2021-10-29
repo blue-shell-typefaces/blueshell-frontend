@@ -1,29 +1,39 @@
 <template>
-  <div class="flex">
-    <select v-bind:modelValue="modelValue" @input="$emit('update:modelValue', parseInt($event.target.value))" class="appearance-none lg:hidden flex-shrink h-10 px-2 mr-2 rounded-full">
+  <div class="flex lg:hidden">
+    <select v-bind:modelValue="modelValue"
+            @input="$emit('update:modelValue', parseInt($event.target.value))"
+            @change="$emit('select')"
+            class="appearance-none flex-shrink h-10 px-2 mr-2 rounded-full">
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
-    <div class="flex-grow h-10 relative rounded-full transition duration-100"
-          :class="[dragging || (!globalDragging && hover) ? 'bg-white' : '']"
-          @mouseover="over"
-          @mouseout="out"
-          @mousedown="start"
-          @touchstart="start"
-          ref="lane">
-      <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary top-0 transform z-10"
-            :class="[modelValue in markers ? 'px-3' : 'w-10']"
+    <div class="flex-grow h-10 relative rounded-full" ref="simpleLane">
+      <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform w-10"
             :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
-            ref="handleWrapper"
-            style="--alert-color: var(--secondary-color)"
-            @mousedown="start"
-      ><span ref="handle" :class="[dragging || (!globalDragging && hover) ? '': 'opacity-0']">{{ label }}</span></span>
-      <span class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2 hover:underline" v-for="(marker, key) in markers"
-            :class="[(dragging || (!globalDragging && hover)) && modelValue != key ? 'opacity-100' : 'opacity-0']"
-            :key="key"
-            :ref="setMarkerRef"
-            :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
-            @mousedown="$emit('update:modelValue', parseInt(key))">{{ marker }}</span>
+            @touchstart="start"
+      ><span>{{ Math.round(this.modelValue) }}</span></span>
     </div>
+  </div>
+
+  <div class="h-10 hidden lg:block relative rounded-full transition duration-100"
+        :class="[dragging || (!globalDragging && hover) ? 'bg-white' : '']"
+        @mouseover="over"
+        @mouseout="out"
+        @mousedown="start"
+        ref="lane">
+    <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary top-0 transform z-10"
+          :class="[modelValue in markers ? 'px-3' : 'w-10']"
+          :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
+          ref="handleWrapper"
+          style="--alert-color: var(--secondary-color)"
+          @mousedown="start"
+    ><span ref="handle" :class="[dragging || (!globalDragging && hover) ? '': 'opacity-0']">{{ label }}</span></span>
+    <span v-for="(marker, key) in markers"
+          class="absolute cursor-pointer h-full hidden lg:inline leading-10 px-3 opacity-0 rounded-full top-1/2 transform -translate-y-1/2 hover:underline"
+          :class="[(dragging || (!globalDragging && hover)) && modelValue != key ? 'opacity-100' : 'opacity-0']"
+          :key="key"
+          :ref="setMarkerRef"
+          :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
+          @mousedown="$emit('update:modelValue', parseInt(key))">{{ marker }}</span>
   </div>
 </template>
 
@@ -37,6 +47,7 @@ export default {
     markers: Object,
     globalDragging: Boolean,
   },
+  emits: ['start', 'end', 'select', 'update:modelValue'],
   data() {
     return {
       dragging: false,
@@ -44,6 +55,7 @@ export default {
       leftRaw: 0,
       offsetLane: 0,
       offsetHandle: 0,
+      offsetSimpleLane: 0,
       markerRefs: [],
     }
   },
@@ -59,23 +71,24 @@ export default {
   created() {
     window.addEventListener('mousemove', this.move)
     window.addEventListener('mouseup', this.end)
-    window.addEventListener('touchmove', this.move)
+    window.addEventListener('touchmove', this.touchMove)
     window.addEventListener('touchend', this.end)
   },
   destroyed() {
     window.removeEventListener('mousemove', this.move)
     window.removeEventListener('mouseup', this.end)
-    window.removeEventListener('touchmove', this.move)
+    window.removeEventListener('touchmove', this.touchMove)
     window.removeEventListener('touchend', this.end)
   },
   mounted() {
     this.offsetLane = this.$refs.lane.getBoundingClientRect().left
+    this.offsetSimpleLane = this.$refs.simpleLane.getBoundingClientRect().left
     this.handleWidth = this.$refs.handle.getBoundingClientRect().width
 
     this.animate(
       function (timeFraction) { return timeFraction },
       progress => {
-        this.$emit('input', Math.round(progress * (400 - this.min) + this.min))
+        this.value = Math.round(progress * (400 - this.min) + this.min)
       },
       1000
     )
@@ -106,12 +119,23 @@ export default {
     },
     move(e) {
       if (this.dragging) {
-        this.$emit('update:modelValue', this.posToValue(e.clientX - this.offsetLane - this.offsetHandle))
+        const x = e.touches ? e.touches[0].clientX : e.clientX
+        this.value = this.posToValue(x - this.offsetLane - this.offsetHandle)
+      }
+    },
+    touchMove(e) {
+      if (this.dragging) {
+        const x = e.touches[0].clientX
+        const ratio = (x - this.offsetSimpleLane) / this.$refs.simpleLane.offsetWidth
+        const result = this.min + (this.max - this.min) * ratio
+        const clamped = Math.min(this.max, Math.max(this.min, result))
+        this.$emit('update:modelValue', clamped)
       }
     },
     start(e) {
       this.offsetHandle = e.target === this.$refs.handle ? e.offsetX : -this.handleWidth / 2
-      this.leftRaw = e.clientX - this.offsetLane - this.offsetHandle
+      const x = e.touches ? e.touches[0].clientX : e.clientX
+      this.leftRaw = x - this.offsetLane - this.offsetHandle
 
       this.dragging = true
       this.$emit('start')

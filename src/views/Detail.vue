@@ -57,6 +57,7 @@
           :markers="family.axes[key].markers"
           @start="isDragging = true"
           @end="isDragging = false"
+          @select="refresh"
           :globalDragging="isDragging" />
       </div>
     </div>
