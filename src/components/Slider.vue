@@ -4,7 +4,7 @@
       <select v-model="modelValue"
               @input="$emit('update:modelValue', parseInt($event.target.value))"
               @change="$emit('select')"
-              class="appearance-none h-10 px-3 rounded-full">
+              class="appearance-none bg-white h-10 px-3 rounded-full">
         <option :value="modelValue" hidden>{{ Math.round(modelValue) }}</option>
         <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
       </select>
