@@ -1,12 +1,15 @@
 <template>
   <div class="flex lg:hidden">
-    <select v-model="modelValue"
-            @input="$emit('update:modelValue', parseInt($event.target.value))"
-            @change="$emit('select')"
-            class="appearance-none flex-shrink h-10 px-2 mr-2 rounded-full">
-      <option :value="modelValue" hidden>{{ Math.round(modelValue) }}</option>
-      <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
-    </select>
+    <div class="flex-shrink mr-2 relative">
+      <select v-model="modelValue"
+              @input="$emit('update:modelValue', parseInt($event.target.value))"
+              @change="$emit('select')"
+              class="appearance-none h-10 px-3 rounded-full">
+        <option :value="modelValue" hidden>{{ Math.round(modelValue) }}</option>
+        <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
+      </select>
+      <div class="absolute pointer-events-none px-2 right-0 top-1/2 -translate-y-1/2">▲</div>
+    </div>
     <div class="flex-grow h-10 relative rounded-full" ref="simpleLane">
       <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform w-10"
             :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
