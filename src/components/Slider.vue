@@ -1,10 +1,10 @@
 <template>
   <div class="flex lg:hidden">
-    <select v-bind:modelValue="modelValue"
+    <select v-model="modelValue"
             @input="$emit('update:modelValue', parseInt($event.target.value))"
             @change="$emit('select')"
             class="appearance-none flex-shrink h-10 px-2 mr-2 rounded-full">
-      <option :value="Math.round(modelValue)" hidden>{{ Math.round(modelValue) }}</option>
+      <option :value="modelValue" hidden>{{ Math.round(modelValue) }}</option>
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full" ref="simpleLane">
