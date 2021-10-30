@@ -4,13 +4,15 @@
             @input="$emit('update:modelValue', parseInt($event.target.value))"
             @change="$emit('select')"
             class="appearance-none flex-shrink h-10 px-2 mr-2 rounded-full">
+      <option :value="modelValue" hidden>{{ label }}</option>
       <option v-for="(marker, key) in markers" :value="key" :key="key">{{ marker }}</option>
     </select>
     <div class="flex-grow h-10 relative rounded-full" ref="simpleLane">
       <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform w-10"
             :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
             @touchstart="start"
-      ><span>{{ Math.round(this.modelValue) }}</span></span>
+            @mousedown="start"
+      ></span>
     </div>
   </div>
 
