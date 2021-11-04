@@ -69,8 +69,8 @@
           <div class="flex h-10 items-center justify-between leading-10">
             <span class="leading-none text-lg tracking-wide	uppercase">Buy {{ family.name }}</span>
             <div class="cursor-pointer h-10 relative rounded-full text-black w-10" @click="isCartShown = false">
-              <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
-              <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
+              <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
+              <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
             </div>
           </div>
 
@@ -85,35 +85,35 @@
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true">
                 <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center rounded-full">
                   <div class="h-10 relative rounded-full w-10" @click="removeStyle(s)">
-                    <span class="absolute border-current border-t-1 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
-                    <span class="absolute border-current border-t-1 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
                   <div class="px-4">{{ family.name }} {{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible">&ndash; Edit</span></div>
                 </div>
-                <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.stylePrice }}</div>
+                <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
 
               <div class="cursor-pointer flex group" @click="addStyle">
                 <div class="group-hover:bg-white flex flex-grow items-center rounded-full">
                   <div class="bg-white h-10 relative rounded-full text-black w-10">
-                    <span class="absolute border-current border-t-1 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
-                    <span class="absolute border-current border-t-1 left-1/4 rotate-90 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-2 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
+                    <span class="absolute border-current border-t-2 left-1/4 rotate-90 top-1/2 transform w-1/2"></span>
                   </div>
                   <div class="px-4">Add style</div>
                 </div>
-                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.stylePrice }}</div>
+                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.style_price }}</div>
               </div>
             </div>
 
             <div class="cursor-pointer flex my-4 group" @click="buyFullFamily = !buyFullFamily">
               <div :class="buyFullFamily ? 'bg-white' : 'group-hover:bg-white'" class="flex flex-grow items-center rounded-full">
                 <div class="bg-white h-10 relative rounded-full text-black w-10">
-                  <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
-                  <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-1 left-1/4 top-1/2 transform w-1/2"></span>
+                  <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
+                  <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
                 </div>
                 <div class="px-4">{{ family.name }} full family</div>
               </div>
-              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 rounded-full text-right w-12">&euro;{{ family.familyPrice }}</div>
+              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
             </div>
           </div>
 
@@ -122,7 +122,7 @@
           <CustomSelect v-model="users" :options="['1 person', '≤3 persons', '≤10 persons', '>10 persons']" />
 
           <div class="my-3">
-            <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
+            <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
             <span class="relative" :class="isPoliticalShown ? 'relative z-50' : ''">
               <span @click="isPoliticalShown = !isPoliticalShown" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
               <span class="absolute top-0 left-0 mt-9 text-sm" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
@@ -140,13 +140,13 @@
             <tbody v-if="buyFullFamily">
               <tr>
                 <td>{{ family.name }} full family</td>
-                <td class="text-right">&euro;{{ family.familyPrice }}</td>
+                <td class="text-right">&euro;{{ family.family_price }}</td>
               </tr>
             </tbody>
             <tbody v-else>
               <tr v-for="(style, i) in filteredCart" :key="`summary_item_${i}`">
                 <td>{{ family.name }} {{ styleName(style) }}</td>
-                <td class="text-right">&euro;{{ family.stylePrice }}</td>
+                <td class="text-right">&euro;{{ family.style_price }}</td>
               </tr>
             </tbody>
           </table>
@@ -218,7 +218,7 @@ export default {
     }
   },
   created() {
-    axios.get(`${import.meta.env.VITE_STATIC_URL}/data.json`)
+    axios.get(`${import.meta.env.VITE_API_URL}/families`)
       .then(({data}) => {
         this.$fonts = data
         this.updateFamily()
@@ -239,7 +239,7 @@ export default {
       fontLoader.load().then(fontFace => {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
-          this.sampleText = this.family.sampleText
+          this.sampleText = this.family.sample_text
           this.$nextTick(() => {
             const style = {}
             Object.keys(this.family.axes).forEach(name => {
@@ -258,7 +258,7 @@ export default {
               setTimeout(() => {
                 this.animate(
                   function (t) {
-                    return t * t * (3.0 - 2.0 * t);
+                    return t;
                   },
                   progress => {
                     const value = progress * (axis.origin - axis.min) + axis.min
@@ -314,16 +314,18 @@ export default {
         }, 100)
         return false
       }
+
+      return true
     },
     formSubmit() {
       if (this.validateForm()) {
         this.buyClicked = true
         axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
-          slug: this.family.slug,
-          cart: this.filteredCart,
+          familyId: this.family.id,
+          styles: this.filteredCart,
+          fullFamily: this.buyFullFamily,
           users: this.users,
           licences: this.licences,
-          buyFullFamily: this.buyFullFamily,
         }).then(({data}) => {
           window.Paddle.Checkout.open({
             override: data.url,
@@ -432,9 +434,9 @@ export default {
     },
     total() {
       if (this.buyFullFamily) {
-        return this.family.familyPrice
+        return this.family.family_price
       } else {
-        return this.filteredCart.length * this.family.stylePrice
+        return this.filteredCart.length * this.family.style_price
       }
     },
     testerBackground() {

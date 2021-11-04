@@ -22,7 +22,8 @@ module.exports = {
     },
     extend: {
       borderWidth: {
-        '1': '2px',
+        '1': '1px',
+        '2': '2px',
       },
       colors: {
         'red': '#ff0000',
