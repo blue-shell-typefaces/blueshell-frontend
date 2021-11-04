@@ -322,7 +322,7 @@ export default {
         this.buyClicked = true
         axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
           familyId: this.family.id,
-          styles: this.filteredCart,
+          styles: this.styles,
           fullFamily: this.buyFullFamily,
           users: this.users,
           licences: this.licences,
@@ -428,6 +428,9 @@ export default {
         set.add(name)
         return result
       })
+    },
+    styles() {
+      return Object.fromEntries(this.cart.map(style => [this.styleName(style), style]))
     },
     fontFamily() {
       return `"${this.family.name}"`
