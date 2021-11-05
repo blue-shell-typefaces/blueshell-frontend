@@ -328,7 +328,7 @@ export default {
           licences: this.licences,
         }).then(({data}) => {
           window.Paddle.Checkout.open({
-            override: data.url,
+            override: data,
           })
         })
       }
