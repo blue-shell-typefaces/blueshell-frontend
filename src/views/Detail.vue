@@ -88,8 +88,8 @@
                     <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} {{ styleName(s) }}</div>
-                  <div class="lg:invisible lg:group-hover:visible px-4 whitespace-nowrap">&ndash; Edit</div>
+                  <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} {{ styleName(s) }}</div>
+                  <div class="lg:invisible lg:group-hover:visible px-4 whitespace-nowrap">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
