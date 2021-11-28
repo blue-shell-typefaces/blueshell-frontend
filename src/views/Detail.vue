@@ -83,37 +83,38 @@
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true">
-                <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center rounded-full">
-                  <div class="h-10 relative rounded-full w-10" @click="removeStyle(s)">
+                <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center max-w-[calc(100%-3rem)] rounded-full">
+                  <div class="h-10 min-w-[2.5rem] relative rounded-full" @click="removeStyle(s)">
                     <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="px-4">{{ family.name }} {{ styleName(s) }} <span class="lg:invisible lg:group-hover:visible">&ndash; Edit</span></div>
+                  <div class="min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} {{ styleName(s) }}</div>
+                  <div class="lg:invisible lg:group-hover:visible px-4 whitespace-nowrap">&ndash; Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
 
               <div class="cursor-pointer flex group" @click="addStyle">
-                <div class="group-hover:bg-white flex flex-grow items-center rounded-full">
-                  <div class="bg-white h-10 relative rounded-full text-black w-10">
+                <div class="group-hover:bg-white flex flex-grow items-center max-w-full group-hover:max-w-[calc(100%-3rem)] rounded-full">
+                  <div class="bg-white h-10 min-w-[2.5rem] relative rounded-full text-black">
                     <span class="absolute border-current border-t-2 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-2 left-1/4 rotate-90 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="px-4">Add style</div>
+                  <div class="min-w-0 px-4 truncate">Add style</div>
                 </div>
                 <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.style_price }}</div>
               </div>
             </div>
 
-            <div class="cursor-pointer flex my-4 group" @click="buyFullFamily = !buyFullFamily">
-              <div :class="buyFullFamily ? 'bg-white' : 'group-hover:bg-white'" class="flex flex-grow items-center rounded-full">
-                <div class="bg-white h-10 relative rounded-full text-black w-10">
+            <div class="cursor-pointer flex my-4 group w-full" @click="buyFullFamily = !buyFullFamily">
+              <div :class="buyFullFamily ? 'bg-white max-w-[calc(100%-3rem)]' : 'group-hover:bg-white group-hover:max-w-[calc(100%-3rem)]'" class="flex flex-grow items-center rounded-full">
+                <div class="bg-white h-10 min-w-[2.5rem] relative rounded-full text-black">
                   <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
                   <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
                 </div>
-                <div class="px-4">{{ family.name }} full family</div>
+                <div class="min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} full family</div>
               </div>
-              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
+              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 pl-2 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
             </div>
           </div>
 
