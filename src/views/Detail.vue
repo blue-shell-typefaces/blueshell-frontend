@@ -42,7 +42,7 @@
                 @input="refresh"
                 @paste="paste"
                 @keydown="keydown"
-                >{{ sampleText }}</div>
+                ><span v-html="sampleText" /></div>
         </div>
       </div>
 
