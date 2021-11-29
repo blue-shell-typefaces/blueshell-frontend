@@ -8,8 +8,8 @@
           <div class="group" :class="isCartShown ? 'hidden' : ''">
             <span class="cursor-pointer uppercase" onclick="">Menu</span>
             <div class="absolute hidden group-hover:block">
-              <div><span class="cursor-pointer hover:underline">About</span></div>
-              <div><span class="cursor-pointer hover:underline">Contact</span></div>
+              <div><span class="cursor-pointer hover:underline" :data-content="about" @click="menu">About</span></div>
+              <div><span class="cursor-pointer hover:underline" :data-content="contact" @click="menu">Contact</span></div>
             </div>
           </div>
 
@@ -233,7 +233,9 @@ export default {
         'App/ePub': false,
         'Video': false,
         'Social Media': false,
-      }
+      },
+      about: 'This website and typeface is still under development. We released it as public beta to catch any inconsistencies.\nSupported using public funding by Slovak Arts Council',
+      contact: 'info@blushell.xyz',
     }
   },
   created() {
@@ -252,6 +254,12 @@ export default {
     window.removeEventListener('resize', this.windowResized)
   },
   methods: {
+    menu(e) {
+      this.sampleText = e.target.dataset.content
+      this.$nextTick(() => {
+        this.refresh()
+      })
+    },
     updateFamily() {
       this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
       const fontLoader = new FontFace(this.family.name, `url(${import.meta.env.VITE_STATIC_URL}/${this.family.filename})`)
