@@ -167,7 +167,7 @@ export default {
         }
       }
 
-      return 0
+      return markers[i]
     },
     valueToPos(value) {
       const markers = Object.keys(this.markers).map(value => parseInt(value))
