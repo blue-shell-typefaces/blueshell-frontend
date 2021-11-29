@@ -234,7 +234,7 @@ export default {
         'Video': false,
         'Social Media': false,
       },
-      about: 'This website and typeface is still under development. We released it as public beta to catch any inconsistencies.\nSupported using public funding by Slovak Arts Council',
+      about: 'This website and typeface is still under development. We released it as public beta to catch any inconsistencies.\nSupported using public funding by Slovak Arts Council\n\u2133',
       contact: 'info@blushell.xyz',
     }
   },
