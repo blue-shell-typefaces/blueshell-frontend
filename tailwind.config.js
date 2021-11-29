@@ -37,12 +37,12 @@ module.exports = {
         grabbing: 'grabbing',
       },
       animation: {
-        alert: 'alert 500ms step-end 3'
+        alert: 'alert 250ms step-end 5'
       },
       keyframes: {
         alert: {
-          '0%, 100%': { backgroundColor: 'white' },
-          '50%': { backgroundColor: 'var(--alert-color)' },
+          '0%, 100%': { backgroundColor: 'white', color: 'black'  },
+          '50%': { backgroundColor: 'var(--alert-color)', color: 'white' },
         }
       },
     },
