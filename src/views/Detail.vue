@@ -249,38 +249,39 @@ export default {
 
             this.style = reactive(style)
 
-            this.refresh()
+            this.$nextTick(() => {
+              this.refresh()
+              Object.keys(this.family.axes).forEach(name => {
+                this.style[name] = 0
+              })
 
-            Object.keys(this.family.axes).forEach(name => {
-              this.style[name] = 0
+              for (const [name, axis] of Object.entries(this.family.axes)) {
+                setTimeout(() => {
+                  this.animate(
+                    function (t) {
+                      return t;
+                    },
+                    progress => {
+                      const value = progress * (axis.origin - axis.min) + axis.min
+                      this.sliderChange(value)
+                      this.style[name] = value
+                    },
+                    1200
+                  )
+                }, 500)
+              }
+
+              const el = this.$refs.textarea
+              const selection = window.getSelection()
+              const range = document.createRange()
+              selection.removeAllRanges()
+              range.selectNodeContents(el)
+              range.collapse(false)
+              selection.addRange(range)
+              this.$refs.textarea.focus()
+
+              this.addStyle()
             })
-
-            for (const [name, axis] of Object.entries(this.family.axes)) {
-              setTimeout(() => {
-                this.animate(
-                  function (t) {
-                    return t;
-                  },
-                  progress => {
-                    const value = progress * (axis.origin - axis.min) + axis.min
-                    this.sliderChange(value)
-                    this.style[name] = value
-                  },
-                  1200
-                )
-              }, 500)
-            }
-
-            const el = this.$refs.textarea
-            const selection = window.getSelection()
-            const range = document.createRange()
-            selection.removeAllRanges()
-            range.selectNodeContents(el)
-            range.collapse(false)
-            selection.addRange(range)
-            this.$refs.textarea.focus()
-
-            this.addStyle()
           })
         })
       }).catch(function () {
