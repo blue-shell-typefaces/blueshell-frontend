@@ -1,5 +1,6 @@
 <template>
   <div v-if="family">
+    <Favicon :color="secondaryColor" />
     <div class="fixed inset-0 min-h-full"
         :class="[isCartShown ? 'w-full lg:w-3/4' : 'w-full']">
       <div class="left-0 right-0 sticky top-0 w-full z-10">
@@ -179,6 +180,7 @@
 
 <script>
 import CustomSelect from "../components/CustomSelect.vue"
+import Favicon from "../components/Favicon.vue"
 import Slider from "../components/Slider.vue"
 import axios from "axios"
 import { reactive } from "vue"
@@ -187,6 +189,7 @@ export default {
   name: 'Detail',
   components: {
     CustomSelect,
+    Favicon,
     Slider,
   },
   data() {
