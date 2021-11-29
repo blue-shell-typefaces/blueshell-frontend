@@ -127,7 +127,7 @@
           <div class="my-3">
             <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">{{ key }}</span>
             <span class="relative" :class="isPoliticalShown ? 'relative z-50' : ''">
-              <span @click="isPoliticalShown = !isPoliticalShown" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white hover:bg-black hover:text-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
+              <span @click="isPoliticalShown = !isPoliticalShown" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4">Political</span>
               <span class="absolute top-0 left-0 mt-9 text-sm" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
             </span>
           </div>
