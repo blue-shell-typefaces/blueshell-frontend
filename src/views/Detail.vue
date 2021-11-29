@@ -32,17 +32,19 @@
 
       <div class="absolute inset-0 p-10" :style="{ background: testerBackground, color: testerColor, fontFamily }">
         <div class="flex h-full items-center w-full" ref="container">
-            <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none text-center w-full whitespace-nowrap lg:whitespace-normal"
-                :class="isDragging ? '' : 'select-auto'"
-                ref="textarea"
-                :style="testerStyle"
-                style="font-variation-settings: 'wght' var(--wght);"
-                spellcheck="false"
-                contenteditable="true"
-                @input="refresh"
-                @paste="paste"
-                @keydown="keydown"
-                ><span v-html="sampleText" /></div>
+          <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-visible resize-none text-center tracking-normal w-full"
+            :data-replicated-value="sampleText"
+            :style="testerStyle">
+            <textarea class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-visible resize-none text-center tracking-normal w-full"
+              @input="refresh"
+              ref="textarea"
+              resize="false"
+              spellcheck="false"
+              :style="testerStyle"
+              v-model="sampleText"
+              rows="1"
+              ></textarea>
+          </div>
         </div>
       </div>
 
@@ -168,11 +170,24 @@
 </template>
 
 <style scoped>
-[contenteditable=true] {
-  font-family: inherit !important;
+[data-replicated-value] {
+  display: grid;
 }
 
-[contenteditable=true]::selection {
+[data-replicated-value]::after {
+  /* append null character for empty new line to have effect */
+  content: attr(data-replicated-value) "\200b";
+  white-space: pre-wrap !important;
+  visibility: hidden;
+
+}
+
+[data-replicated-value]::after,
+textarea {
+  grid-area: 1 / 1 / 2 / 2;
+}
+
+textarea::selection {
   color: var(--secondary-color);
   background: none;
 }
@@ -396,7 +411,7 @@ export default {
       }
 
       this.fontSize *= ratio
-      textarea.style.fontSize = `${Math.floor(this.fontSize)}px`
+      this.$refs.container.style.fontSize = `${Math.floor(this.fontSize)}px`
 
       return ratio
     },
@@ -473,6 +488,10 @@ export default {
         const style = {}
 
         if (this.style) {
+          style.fontVariationSettings = Object.keys(this.style)
+            .map(axis => `'${axis}' var(--${axis})`)
+            .join(',')
+
           Object.assign(
             style,
             Object.fromEntries(
