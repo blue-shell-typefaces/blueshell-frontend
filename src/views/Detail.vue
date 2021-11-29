@@ -1,6 +1,5 @@
 <template>
   <div v-if="family">
-    <Favicon :color="secondaryColor" />
     <div class="fixed inset-0 min-h-full"
         :class="[isCartShown ? 'w-full lg:w-3/4' : 'w-full']">
       <div class="left-0 right-0 sticky top-0 w-full z-10">
@@ -164,6 +163,7 @@
         <div class="absolute cursor-pointer inset-0 bg-orange z-40" :class="isPoliticalShown ? '' : 'hidden'" @click="isPoliticalShown = false"></div>
       </div>
     </div>
+    <Favicon :color="secondaryColor" />
   </div>
 </template>
 

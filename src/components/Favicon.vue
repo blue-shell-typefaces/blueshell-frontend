@@ -1,5 +1,5 @@
 <template>
-    <svg viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+    <svg class="hidden" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
         <circle ref="circle" cx="86" cy="86" r="86" :fill="color" />
     </svg>
 </template>
