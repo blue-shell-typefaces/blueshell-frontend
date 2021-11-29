@@ -42,6 +42,18 @@
   </div>
 </template>
 
+<style scoped>
+select:focus {
+  outline: 0;
+  background: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+select:focus + div {
+  color: var(--primary-color);
+}
+</style>
+
 <script>
 export default {
   name: 'Slider',
