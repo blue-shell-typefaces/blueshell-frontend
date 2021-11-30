@@ -14,8 +14,8 @@
           </div>
 
           <div class="flex leading-10">
-            <a href="#" class="hidden mx-5 hover:underline" :class="isCartShown ? '' : 'lg:block'" data-content="Soon" @click="menu">Specimen</a>
-            <a href="#" class="hidden mx-5 hover:underline" :class="isCartShown ? '' : 'lg:block'" data-content="Soon" @click="menu">Trial</a>
+            <span class="hidden mx-5 hover:underline" :class="isCartShown ? '' : 'lg:block'" data-content="Soon" @click="menu">Specimen</span>
+            <span class="hidden mx-5 hover:underline" :class="isCartShown ? '' : 'lg:block'" data-content="Soon" @click="menu">Trial</span>
             <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
               :class="isCartShown ? 'hidden' : ''"
               @click="isCartShown = true"
