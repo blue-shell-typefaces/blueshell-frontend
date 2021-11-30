@@ -265,7 +265,7 @@ export default {
       })
     },
     updateFamily() {
-      this.family = this.$fonts.find(font => font.slug === this.$route.params.family)
+      this.family = this.$fonts.find(font => font.slug === 'gates')
       const fontLoader = new FontFace(this.family.name, `url(${import.meta.env.VITE_STATIC_URL}/${this.family.filename})`)
       fontLoader.load().then(fontFace => {
         document.fonts.add(fontFace)

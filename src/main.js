@@ -9,8 +9,8 @@ import './index.css'
 const router = createRouter({
     history: createWebHistory(),
     routes: [
-        { path: '/', name: 'Home', component: Home },
-        { path: '/:family', name: 'detail', component: Detail }
+        { path: '/', name: 'detail', component: Detail },
+        // { path: '/:family', name: 'detail', component: Detail }
     ]
 })
 
