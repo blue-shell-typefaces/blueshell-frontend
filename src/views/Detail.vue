@@ -32,10 +32,10 @@
 
       <div class="absolute inset-0 p-10" :style="{ background: testerBackground, color: testerColor, fontFamily }">
         <div class="flex h-full items-center w-full" ref="container">
-          <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-visible resize-none text-center tracking-normal w-full"
+          <div class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-hidden resize-none text-center tracking-normal w-full"
             :data-replicated-value="sampleText"
             :style="testerStyle">
-            <textarea class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-visible resize-none text-center tracking-normal w-full"
+            <textarea class="balanced-text bg-transparent break-normal leading-none max-h-full outline-none overflow-hidden resize-none text-center tracking-normal w-full"
               @input="refresh"
               ref="textarea"
               resize="false"
@@ -49,9 +49,9 @@
       </div>
 
       <div class="absolute bottom-0 left-0 mb-2 mx-4 right-0">
-        <Slider v-for="(axis, key) in style"
+        <SelectSlider v-for="(axis, key) in style"
           :key="key"
-          :ref="setSliderRef"
+          :ref="el => { if (el) selectSliderRefs.push(el) }"
           v-model="style[key]"
           v-on:update:modelValue="sliderChange"
           :min="family.axes[key].min"
@@ -59,7 +59,17 @@
           :markers="family.axes[key].markers"
           @start="isDragging = true"
           @end="isDragging = false"
-          @select="refresh"
+          @select="refresh" />
+        <MarkerSlider v-for="(axis, key) in style"
+          :key="key"
+          :ref="el => { if (el) markerSliderRefs.push(el) }"
+          v-model="style[key]"
+          v-on:update:modelValue="sliderChange"
+          :min="family.axes[key].min"
+          :max="family.axes[key].max"
+          :markers="family.axes[key].markers"
+          @start="isDragging = true"
+          @end="isDragging = false"
           :globalDragging="isDragging" />
       </div>
     </div>
@@ -200,7 +210,8 @@ textarea::selection {
 <script>
 import CustomSelect from "../components/CustomSelect.vue"
 import Favicon from "../components/Favicon.vue"
-import Slider from "../components/Slider.vue"
+import MarkerSlider from "../components/MarkerSlider.vue"
+import SelectSlider from "../components/SelectSlider.vue"
 import axios from "axios"
 import { reactive } from "vue"
 
@@ -209,7 +220,8 @@ export default {
   components: {
     CustomSelect,
     Favicon,
-    Slider,
+    MarkerSlider,
+    SelectSlider,
   },
   data() {
     return {
@@ -230,7 +242,8 @@ export default {
       isPoliticalShown: false,
       isMenuShown: false,
       sampleText: '',
-      sliderRefs: [],
+      markerSliderRefs: [],
+      selectSliderRefs: [],
       licences: {
         'Desktop/Print': false,
         'Web': false,
@@ -281,6 +294,7 @@ export default {
 
             this.$nextTick(() => {
               this.refresh()
+
               Object.keys(this.family.axes).forEach(name => {
                 this.style[name] = 0
               })
@@ -296,9 +310,9 @@ export default {
                       this.sliderChange(value)
                       this.style[name] = value
                     },
-                    1200
+                    2000
                   )
-                }, 500)
+                }, 600)
               }
 
               const el = this.$refs.textarea
@@ -380,7 +394,10 @@ export default {
     addStyle() {
       this.style = reactive({ ...this.style })
       this.cart.push(this.style)
-      this.sliderRefs.forEach(slider => {
+      this.markerSliderRefs.forEach(slider => {
+        slider.blink()
+      })
+      this.selectSliderRefs.forEach(slider => {
         slider.blink()
       })
     },
@@ -457,11 +474,6 @@ export default {
 
       return values
     },
-    setSliderRef(el) {
-      if (el) {
-        this.sliderRefs.push(el)
-      }
-    }
   },
   computed: {
     filteredCart() {
