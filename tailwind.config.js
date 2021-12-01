@@ -62,7 +62,7 @@ module.exports = {
             animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
           },
           '50%': {
-            top: '0',
+            top: '0%',
             transform: 'var(--tw-transform)',
             animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
           }
