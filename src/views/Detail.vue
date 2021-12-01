@@ -271,6 +271,26 @@ export default {
     window.removeEventListener('resize', this.windowResized)
   },
   methods: {
+    introAnimation() {
+      if (document.visibilityState === 'visible') {
+        document.removeEventListener('visibilitychange', this.introAnimation)
+        for (const [name, axis] of Object.entries(this.family.axes)) {
+          setTimeout(() => {
+            this.animate(
+              function (t) {
+                return t;
+              },
+              progress => {
+                const value = progress * (axis.origin - axis.min) + axis.min
+                this.updateColors(value)
+                this.style[name] = value
+              },
+              2000
+            )
+          }, 600)
+        }
+      }
+    },
     isTouchDevice() {
       return (('ontouchstart' in window) ||
         (navigator.maxTouchPoints > 0) ||
@@ -309,21 +329,8 @@ export default {
                 this.style[name] = 0
               })
 
-              for (const [name, axis] of Object.entries(this.family.axes)) {
-                setTimeout(() => {
-                  this.animate(
-                    function (t) {
-                      return t;
-                    },
-                    progress => {
-                      const value = progress * (axis.origin - axis.min) + axis.min
-                      this.updateColors(value)
-                      this.style[name] = value
-                    },
-                    2000
-                  )
-                }, 600)
-              }
+              document.addEventListener('visibilitychange', this.introAnimation)
+              this.introAnimation()
 
               const el = this.$refs.textarea
               const selection = window.getSelection()
