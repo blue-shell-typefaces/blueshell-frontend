@@ -35,12 +35,29 @@ module.exports = {
         grabbing: 'grabbing',
       },
       animation: {
-        alert: 'alert 250ms step-end 5'
+        alert: 'alert 250ms step-end 5',
+        bounce: 'bounce 750ms infinite',
       },
       keyframes: {
         alert: {
-          '0%, 100%': { backgroundColor: 'white', color: 'black'  },
-          '50%': { backgroundColor: 'var(--alert-color)', color: 'white' },
+          '0%, 100%': {
+            backgroundColor: 'white',
+            color: 'black'
+          },
+          '50%': {
+            backgroundColor: 'var(--alert-color)',
+            color: 'white'
+          },
+        },
+        bounce: {
+          '0%, 100%': {
+            transform: 'translateX(var(--tw-translate-x)) translateY(-25%)',
+            animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
+          },
+          '50%': {
+            transform: 'translateX(var(--tw-translate-x)) translateY(0)',
+            animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
+          }
         }
       },
     },

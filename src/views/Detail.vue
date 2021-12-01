@@ -94,7 +94,7 @@
             <p class="mb-2 mt-4">Your styles of {{ family.name }}</p>
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
-              <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true">
+              <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true; bounceSliders()">
                 <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center max-w-[calc(100%-3rem)] rounded-full">
                   <div class="h-10 min-w-[2.5rem] relative rounded-full" @click="removeStyle(s)">
                     <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
@@ -324,7 +324,7 @@ export default {
               selection.addRange(range)
               this.$refs.textarea.focus()
 
-              this.addStyle()
+              this.addStyle(false)
             })
           })
         })
@@ -391,14 +391,20 @@ export default {
         })
       }
     },
-    addStyle() {
+    addStyle(bounce = true) {
       this.style = reactive({ ...this.style })
       this.cart.push(this.style)
+
+      if (bounce) {
+        this.bounceSliders()
+      }
+    },
+    bounceSliders() {
       this.markerSliderRefs.forEach(slider => {
-        slider.blink()
+        slider.bounce()
       })
       this.selectSliderRefs.forEach(slider => {
-        slider.blink()
+        slider.bounce()
       })
     },
     removeStyle(style) {

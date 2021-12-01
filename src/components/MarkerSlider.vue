@@ -13,6 +13,7 @@
       :ref="el => setMarkerRef(el, key)"
       :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
       @mousedown="$emit('update:modelValue', parseInt(key))">{{ marker }}</span>
+
     <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform -translate-x-1/2"
       :class="[modelValue in markers ? 'px-3' : 'w-10', ]"
       ref="handle"
@@ -139,14 +140,16 @@ export default {
         }
       }
     },
-    blink() {
-      const el = this.$refs.handle
-      if (!el) return
-      el.classList.remove('animate-alert')
-      // todo
-      window.setTimeout(() => {
-        el.classList.add('animate-alert')
-      }, 100)
+    bounce(value = true) {
+      if (!this.$refs.handle) return
+      this.$refs.handle.classList.remove('animate-bounce')
+
+      if (value) {
+        // todo
+        window.setTimeout(() => {
+          this.$refs.handle.classList.add('animate-bounce')
+        }, 100)
+      }
     },
     setMarkerRef(el, key) {
       if (el) {

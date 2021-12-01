@@ -11,11 +11,11 @@
       </select>
       <span class="absolute pointer-events-none px-2 right-0 top-1/2 -translate-y-1/2">▲</span>
     </div>
-    <div class="flex-grow h-10 relative rounded-full" ref="lane">
+    <div class="flex-grow h-10 mx-5 relative rounded-full" ref="lane">
       <span
-        class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform w-10"
+        class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary -translate-x-1/2 w-10"
         ref="handle"
-        :style="{ left: `${100 * modelValue / (max - min)}%`, '--tw-translate-x': `${-100 * modelValue / (max - min)}%` }"
+        :style="{ left: `${100 * modelValue / (max - min)}%` }"
         @mousedown="start"
         @touchstart="start"></span>
     </div>
@@ -76,19 +76,23 @@ export default {
       this.dragging = true
       this.$emit('start')
       this.move(e)
+      this.bounce(false)
     },
     end() {
       this.dragging = false
       this.$emit('end')
     },
-    blink() {
-      const el = this.$refs.handle
-      if (!el) return
-      el.classList.remove('animate-alert')
-      // todo
-      window.setTimeout(() => {
-        el.classList.add('animate-alert')
-      }, 100)
+    bounce(value = true) {
+      if (!this.$refs.handle) return
+
+      this.$refs.handle.classList.remove('animate-bounce')
+
+      if (value) {
+        // todo
+        window.setTimeout(() => {
+          this.$refs.handle.classList.add('animate-bounce')
+        }, 100)
+      }
     }
   }
 }
