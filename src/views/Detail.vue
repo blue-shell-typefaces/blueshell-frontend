@@ -295,9 +295,19 @@ export default {
       }
     },
     menu(e) {
-      this.sampleText = e.target.dataset.content
+      this.sampleText = '';
+      const characters = [...e.target.dataset.content]
+      this.animateText(characters, characters.length)
+    },
+    animateText(characters, length) {
+      if (!characters.length) return
+      const character = characters.shift()
+      this.sampleText += character
       this.$nextTick(() => {
         this.refresh()
+        setTimeout(() => {
+          this.animateText(characters, length)
+        }, Math.ceil(300 / length))
       })
     },
     updateFamily() {
