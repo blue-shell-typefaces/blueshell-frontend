@@ -168,7 +168,7 @@
         <div class="bottom-0 bg-primary sticky w-full z-30" v-if="total > 0">
           <div class="flex items-center p-4">
             <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
-            <button @click="formSubmit" class="bg-white hover:bg-black inline-block h-10 leading-10 rounded-full text-center hover:text-white w-10">Buy</button>
+            <button data-content="Soon" @click="formSubmit" class="bg-white hover:bg-black inline-block h-10 leading-10 rounded-full text-center hover:text-white w-10">Buy</button>
           </div>
         </div>
 
@@ -385,20 +385,21 @@ export default {
 
       return valid
     },
-    formSubmit() {
+    formSubmit(e) {
       if (this.validateForm()) {
-        this.buyClicked = true
-        axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
-          familyId: this.family.id,
-          styles: this.styles,
-          fullFamily: this.buyFullFamily,
-          users: this.users,
-          licences: this.licences,
-        }).then(({data}) => {
-          window.Paddle.Checkout.open({
-            override: data,
-          })
-        })
+        this.menu(e)
+
+        // axios.post(`${import.meta.env.VITE_API_URL}/pay-link`, {
+        //   familyId: this.family.id,
+        //   styles: this.styles,
+        //   fullFamily: this.buyFullFamily,
+        //   users: this.users,
+        //   licences: this.licences,
+        // }).then(({data}) => {
+        //   window.Paddle.Checkout.open({
+        //     override: data,
+        //   })
+        // })
       }
     },
     addStyle(bounce = true) {
