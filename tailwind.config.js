@@ -21,6 +21,11 @@ module.exports = {
       }]
     },
     extend: {
+      backgroundImage: {
+        'caret': 'url("/assets/caret.svg")',
+        'plus': 'url("/assets/plus.svg")',
+        'times': 'url("/assets/times.svg")',
+      },
       borderWidth: {
         '1': '1px',
         '2': '2px',

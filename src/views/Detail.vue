@@ -80,10 +80,7 @@
         <div class="pb-4 px-4">
           <div class="flex h-10 items-center justify-between leading-10">
             <span class="leading-none text-lg tracking-wide	uppercase">Buy {{ family.name }}</span>
-            <div class="cursor-pointer h-10 relative rounded-full text-black w-10" @click="isCartShown = false">
-              <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
-              <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
-            </div>
+            <div class="bg-times cursor-pointer h-10 rounded-full w-10" @click="isCartShown = false"></div>
           </div>
 
           <div>
@@ -97,8 +94,10 @@
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; bounceSliders()">
                 <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center max-w-[calc(100%-3rem)] rounded-full">
                   <div class="h-10 min-w-[2.5rem] relative rounded-full" @click="removeStyle(s)">
-                    <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
-                    <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 45">
+                      <line style="stroke:currentColor;stroke-width:1.79;" x1="31.42" y1="31.72" x2="13.58" y2="12.72"/>
+                      <line style="stroke:currentColor;stroke-width:1.79;" x1="13.58" y1="31.72" x2="31.42" y2="12.72"/>
+                    </svg>
                   </div>
                   <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
                   <div @click="isEditing = true" class="bg-secondary h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full text-primary">Edit</div>
@@ -108,10 +107,7 @@
 
               <div class="cursor-pointer flex group" @click="addStyle">
                 <div class="group-hover:bg-white flex flex-grow items-center max-w-full group-hover:max-w-[calc(100%-3rem)] rounded-full">
-                  <div class="bg-white h-10 min-w-[2.5rem] relative rounded-full text-black">
-                    <span class="absolute border-current border-t-2 left-1/4 rotate-0 top-1/2 transform w-1/2"></span>
-                    <span class="absolute border-current border-t-2 left-1/4 rotate-90 top-1/2 transform w-1/2"></span>
-                  </div>
+                  <div class="bg-plus bg-white h-10 min-w-[2.5rem] rounded-full"></div>
                   <div class="min-w-0 px-4 truncate">Add style</div>
                 </div>
                 <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.style_price }}</div>
@@ -120,10 +116,7 @@
 
             <div class="cursor-pointer flex my-4 group w-full" @click="buyFullFamily = !buyFullFamily">
               <div :class="buyFullFamily ? 'bg-white max-w-[calc(100%-3rem)]' : 'group-hover:bg-white group-hover:max-w-[calc(100%-3rem)]'" class="flex flex-grow items-center rounded-full">
-                <div class="bg-white h-10 min-w-[2.5rem] relative rounded-full text-black">
-                  <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
-                  <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
-                </div>
+                <div :class="buyFullFamily ? 'bg-times' : 'bg-plus'" class="bg-white h-10 min-w-[2.5rem] rounded-full"></div>
                 <div class="min-w-0 px-4 truncate whitespace-nowrap">Full family</div>
               </div>
               <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 pl-2 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
