@@ -4,6 +4,7 @@
 
 @layer base {
     :root {
+        font-feature-settings: 'calt' 1;
         font-size: 18px;
     }
 }
