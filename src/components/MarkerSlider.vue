@@ -11,8 +11,7 @@
       :class="[(dragging || (!globalDragging && hover)) ? '' : 'invisible']"
       :key="key"
       :ref="el => setMarkerRef(el, key)"
-      :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
-      @mousedown="$emit('update:modelValue', parseInt(key))">{{ marker }}</span>
+      :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }">{{ marker }}</span>
 
     <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform -translate-x-1/2"
       :class="[modelValue in markers ? 'px-3' : 'w-10', ]"
@@ -80,6 +79,7 @@ export default {
       this.dragging = true
       this.$emit('start')
       this.move(e)
+      this.bounce(false)
     },
     end() {
       this.dragging = false
