@@ -19,8 +19,8 @@
             <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
               :class="isCartShown ? 'hidden' : ''"
               @click="isCartShown = true"
-              @mouseover="buyButtonHover = true"
-              @mouseleave="buyButtonHover = false"
+              @mouseover="buyHover(true)"
+              @mouseleave="buyHover(false)"
               v-show="!isCartShown">Buy</div>
             <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
               :class="isEditing ? 'lg:hidden' : 'hidden'"
@@ -271,6 +271,16 @@ export default {
     window.removeEventListener('resize', this.windowResized)
   },
   methods: {
+    isTouchDevice() {
+      return (('ontouchstart' in window) ||
+        (navigator.maxTouchPoints > 0) ||
+        (navigator.msMaxTouchPoints > 0))
+    },
+    buyHover(value) {
+      if (!this.isTouchDevice()) {
+        this.buyButtonHover = value
+      }
+    },
     menu(e) {
       this.sampleText = e.target.dataset.content
       this.$nextTick(() => {
