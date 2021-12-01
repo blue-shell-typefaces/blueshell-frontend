@@ -100,7 +100,11 @@
                     </svg>
                   </div>
                   <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
-                  <div @click="isEditing = true" :class="style === s ? 'bg-white text-black' : 'bg-secondary text-primary'" class="h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full">Edit</div>
+                  <div
+                    @click="isEditing = true"
+                    :class="style === s ? 'bg-white text-black' : ''"
+                    class="h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full"
+                    :style="{ backgroundColor: valueToColor(Object.values(s)[0], true), color: valueToColor(Object.values(s)[0], false) }">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
@@ -435,10 +439,17 @@ export default {
       this.cart = this.cart.filter(s => s !== style)
     },
     updateColors(value) {
+      this.primaryColor = this.valueToColor(value, false)
+      this.secondaryColor = this.valueToColor(value, true)
+    },
+    valueToColor(value, opposite) {
       const mapped = ((360 - 100) * value / 1000) + 100
-      const opposite = mapped > 240 ? mapped - 240 : mapped + 240
-      this.primaryColor = `hsl(${opposite}, 100%, 50%)`
-      this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
+      if (opposite) {
+        const opposite = mapped > 240 ? mapped - 240 : mapped + 240
+        return `hsl(${opposite}, 100%, 50%)`
+      } else {
+        return `hsl(${mapped}, 100%, 50%)`
+      }
     },
     windowResized() {
         this.refresh()
