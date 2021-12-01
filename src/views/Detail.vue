@@ -93,8 +93,8 @@
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; bounceSliders()">
                 <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center max-w-[calc(100%-3rem)] rounded-full">
-                  <div class="h-10 min-w-[2.5rem] relative rounded-full" @click="removeStyle(s)">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 45">
+                  <div class="h-10 min-w-[2.5rem] rounded-full" @click="removeStyle(s)">
+                    <svg class="h-full w-10" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 45 45">
                       <line style="stroke:currentColor;stroke-width:1.79;" x1="31.42" y1="31.72" x2="13.58" y2="12.72"/>
                       <line style="stroke:currentColor;stroke-width:1.79;" x1="13.58" y1="31.72" x2="31.42" y2="12.72"/>
                     </svg>
