@@ -27,6 +27,7 @@ module.exports = {
       },
       colors: {
         'red': '#ff0000',
+        'lightgray': 'lightgray',
         'primary': 'var(--primary-color)',
         'secondary': 'var(--secondary-color)',
       },

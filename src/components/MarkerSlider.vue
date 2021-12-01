@@ -6,19 +6,23 @@
     @mouseover="hover = true"
     @mouseout="hover = false"
     @mousedown="start">
+    <span
+      class="absolute bg-lightgray cursor-pointer h-10 leading-10 rounded-full text-center -translate-x-1/2"
+      :class="[ghostValue in markers ? 'px-3' : 'w-10', ]"
+      ref="ghost"
+      :style="{ left: `${valueToPos(ghostValue) * 100}%` }"><span class="invisible">{{ label(ghostValue) }}</span></span>
     <span v-for="(marker, key) in markers"
-      class="absolute cursor-pointer h-full leading-10 px-3 rounded-full top-1/2 transform -translate-y-1/2 hover:underline"
+      class="absolute cursor-pointer h-full leading-10 px-3 rounded-full top-1/2 -translate-y-1/2 hover:underline"
       :class="[(dragging || (!globalDragging && hover)) ? '' : 'invisible']"
       :key="key"
       :ref="el => setMarkerRef(el, key)"
       :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }">{{ marker }}</span>
-
-    <span class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary transform -translate-x-1/2"
+    <span
+      class="absolute bg-secondary cursor-grab active:cursor-grabbing h-10 leading-10 rounded-full text-center text-primary -translate-x-1/2"
       :class="[modelValue in markers ? 'px-3' : 'w-10', ]"
       ref="handle"
-      style="--alert-color: var(--secondary-color)"
       :style="{ left: `${valueToPos(modelValue) * 100}%` }"
-      ><span :class="[dragging || (!globalDragging && hover) ? '': 'invisible']">{{ label }}</span></span>
+      ><span :class="[dragging || (!globalDragging && hover) ? '': 'invisible']">{{ label(modelValue) }}</span></span>
   </div>
 </template>
 
@@ -40,16 +44,8 @@ export default {
       hover: false,
       markerRefs: [],
       markerRefMap: {},
+      ghostValue: 0,
     }
-  },
-  computed: {
-    label() {
-      if (this.modelValue in this.markers) {
-        return this.markers[this.modelValue]
-      } else {
-        return Math.round(this.modelValue)
-      }
-    },
   },
   created() {
     window.addEventListener('mousemove', this.move)
@@ -69,10 +65,19 @@ export default {
     }
   },
   methods: {
+    label(value) {
+      if (value in this.markers) {
+        return this.markers[value]
+      } else {
+        return Math.round(value)
+      }
+    },
     move(e) {
+      const x = e.touches ? e.touches[0].clientX : e.clientX
+      const value = this.posToValue(x)
+      this.ghostValue = value
       if (this.dragging) {
-        const x = e.touches ? e.touches[0].clientX : e.clientX
-        this.$emit('update:modelValue', this.posToValue(x))
+        this.$emit('update:modelValue', value)
       }
     },
     start(e) {
