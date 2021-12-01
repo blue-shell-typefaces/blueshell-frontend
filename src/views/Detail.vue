@@ -468,8 +468,15 @@ export default {
         }
     },
     styleName(style) {
-      const values = Object.values(style)
-        .map(value => Math.round(value).toString().padStart(3, '0'))
+      const values = Object.entries(style)
+        .map(([key, value]) => {
+          const rounded = Math.round(value).toString()
+          if (rounded in this.family.axes[key].markers) {
+            return this.family.axes[key].markers[rounded]
+          } else {
+            return rounded.padStart(3, '0')
+          }
+        })
         .join('')
 
       return values
