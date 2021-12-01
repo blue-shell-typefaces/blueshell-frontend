@@ -12,7 +12,7 @@
       ref="ghost"
       :style="{ left: `${valueToPos(ghostValue) * 100}%` }"><span class="invisible">{{ label(ghostValue) }}</span></span>
     <span v-for="(marker, key) in markers"
-      class="absolute cursor-pointer h-full leading-10 px-3 rounded-full top-1/2 -translate-y-1/2 hover:underline"
+      class="absolute cursor-pointer h-full leading-10 px-3 rounded-full top-1/2 -translate-y-1/2"
       :class="[(dragging || (!globalDragging && hover)) ? '' : 'invisible']"
       :key="key"
       :ref="el => setMarkerRef(el, key)"
