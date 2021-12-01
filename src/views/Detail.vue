@@ -100,7 +100,7 @@
                     </svg>
                   </div>
                   <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
-                  <div @click="isEditing = true" class="bg-secondary h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full text-primary">Edit</div>
+                  <div @click="isEditing = true" :class="style === s ? 'bg-white text-black' : 'bg-secondary text-primary'" class="h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
