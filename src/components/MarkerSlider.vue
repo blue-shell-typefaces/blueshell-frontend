@@ -8,6 +8,7 @@
     @mousedown="start">
     <span v-for="(marker, key) in markers"
       class="absolute cursor-pointer h-full leading-10 px-3 rounded-full top-1/2 transform -translate-y-1/2 hover:underline"
+      :class="[(dragging || (!globalDragging && hover)) ? '' : 'invisible']"
       :key="key"
       :ref="el => setMarkerRef(el, key)"
       :style="{ left: `${100 * key / max}%`, '--tw-translate-x': `${-100 * key / max}%` }"
@@ -16,7 +17,7 @@
       :class="[modelValue in markers ? 'px-3' : 'w-10', ]"
       ref="handle"
       style="--alert-color: var(--secondary-color)"
-      :style="{ left: `${valueToPos(this.modelValue) * 100}%` }"
+      :style="{ left: `${valueToPos(modelValue) * 100}%` }"
       ><span :class="[dragging || (!globalDragging && hover) ? '': 'invisible']">{{ label }}</span></span>
   </div>
 </template>
