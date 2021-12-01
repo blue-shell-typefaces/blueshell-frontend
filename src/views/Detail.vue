@@ -74,7 +74,7 @@
       </div>
     </div>
 
-    <div class="bg-beige bottom-0 fixed overflow-y-auto right-0 top-0 w-full lg:w-1/4" :class="isCartShown ? (isEditing ? 'hidden lg:block' : '') : 'hidden'">
+    <div class="bg-primary bottom-0 fixed overflow-y-auto right-0 top-0 w-full lg:w-1/4" :class="isCartShown ? (isEditing ? 'hidden lg:block' : '') : 'hidden'">
       <div class="pt-2 relative min-h-full">
 
         <div class="pb-4 px-4">
@@ -138,7 +138,7 @@
             <span v-for="(value, key) in licences" :key="`licence_${key}`" @click="licences[key] = !licences[key]" :class="licences[key] ? 'bg-black text-white' : 'bg-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4" data-licence>{{ key }}</span>
             <span class="relative" :class="isPoliticalShown ? 'relative z-50' : ''">
               <span @click="isPoliticalShown = !isPoliticalShown" :class="isPoliticalShown ? 'bg-black text-white' : 'bg-white'" class="cursor-pointer h-10 inline-block leading-10 rounded-full px-4" data-licence>Political</span>
-              <span class="absolute top-0 left-0 mt-9 text-sm" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
+              <span class="absolute top-0 left-0 mt-9 text-sm text-white" :class="isPoliticalShown ? '' : 'hidden'">Please contact us<br><a class="underline" href="mailto:info@blueshell.xyz">info@blueshell.xyz</a></span>
             </span>
           </div>
 
@@ -165,14 +165,14 @@
           </table>
         </div>
 
-        <div class="border-black border-t-1 bottom-0 bg-beige sticky w-full z-30" v-if="total > 0">
+        <div class="bottom-0 bg-primary sticky w-full z-30" v-if="total > 0">
           <div class="flex items-center p-4">
             <div class="flex-grow px-4 text-right">&euro;{{ total }}</div>
             <button @click="formSubmit" class="bg-white hover:bg-black inline-block h-10 leading-10 rounded-full text-center hover:text-white w-10">Buy</button>
           </div>
         </div>
 
-        <div class="absolute cursor-pointer inset-0 bg-orange z-40" :class="isPoliticalShown ? '' : 'hidden'" @click="isPoliticalShown = false"></div>
+        <div class="absolute cursor-pointer inset-0 bg-red z-40" :class="isPoliticalShown ? '' : 'hidden'" @click="isPoliticalShown = false"></div>
       </div>
     </div>
     <Favicon :color="secondaryColor" />
@@ -405,8 +405,8 @@ export default {
       this.cart = this.cart.filter(s => s !== style)
     },
     sliderChange(value) {
-      const mapped = 360 * value / 1000
-      const opposite = mapped > 180 ? mapped - 180 : mapped + 180
+      const mapped = ((360 - 100) * value / 1000) + 100
+      const opposite = mapped > 240 ? mapped - 240 : mapped + 240
       this.primaryColor = `hsl(${opposite}, 100%, 50%)`
       this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
     },

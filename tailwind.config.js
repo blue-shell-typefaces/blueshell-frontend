@@ -27,8 +27,6 @@ module.exports = {
       },
       colors: {
         'red': '#ff0000',
-        'orange': '#ff7a4d',
-        'beige': '#e4dbc8',
         'primary': 'var(--primary-color)',
         'secondary': 'var(--secondary-color)',
       },
