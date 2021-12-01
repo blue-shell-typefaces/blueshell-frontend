@@ -53,7 +53,7 @@
           :key="key"
           :ref="el => { if (el) selectSliderRefs.push(el) }"
           v-model="style[key]"
-          v-on:update:modelValue="sliderChange"
+          v-on:update:modelValue="updateColors"
           :min="family.axes[key].min"
           :max="family.axes[key].max"
           :markers="family.axes[key].markers"
@@ -64,7 +64,7 @@
           :key="key"
           :ref="el => { if (el) markerSliderRefs.push(el) }"
           v-model="style[key]"
-          v-on:update:modelValue="sliderChange"
+          v-on:update:modelValue="updateColors"
           :min="family.axes[key].min"
           :max="family.axes[key].max"
           :markers="family.axes[key].markers"
@@ -307,7 +307,7 @@ export default {
                     },
                     progress => {
                       const value = progress * (axis.origin - axis.min) + axis.min
-                      this.sliderChange(value)
+                      this.updateColors(value)
                       this.style[name] = value
                     },
                     2000
@@ -404,7 +404,7 @@ export default {
     removeStyle(style) {
       this.cart = this.cart.filter(s => s !== style)
     },
-    sliderChange(value) {
+    updateColors(value) {
       const mapped = ((360 - 100) * value / 1000) + 100
       const opposite = mapped > 240 ? mapped - 240 : mapped + 240
       this.primaryColor = `hsl(${opposite}, 100%, 50%)`
@@ -562,10 +562,7 @@ export default {
     style(newStyle) {
       const key = Object.keys(newStyle)[0]
       const value = newStyle[key]
-      const mapped = 360 * value / 1000
-      const opposite = mapped > 180 ? mapped - 180 : mapped + 180
-      this.primaryColor = `hsl(${opposite}, 100%, 50%)`
-      this.secondaryColor = `hsl(${mapped}, 100%, 50%)`
+      this.updateColors(value)
     },
     primaryColor(value) {
       this.$el.style.setProperty('--primary-color', value)

@@ -74,10 +74,12 @@ export default {
     },
     start(e) {
       this.dragging = true
+      this.$emit('start')
       this.move(e)
     },
     end() {
       this.dragging = false
+      this.$emit('end')
     },
     blink() {
       const el = this.$refs.handle
