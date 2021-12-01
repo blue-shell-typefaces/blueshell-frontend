@@ -57,11 +57,13 @@ module.exports = {
         },
         bounce: {
           '0%, 100%': {
-            transform: 'translateX(var(--tw-translate-x)) translateY(-25%)',
+            top: '-25%',
+            transform: 'var(--tw-transform)',
             animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)'
           },
           '50%': {
-            transform: 'translateX(var(--tw-translate-x)) translateY(0)',
+            top: '0',
+            transform: 'var(--tw-transform)',
             animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)'
           }
         }
