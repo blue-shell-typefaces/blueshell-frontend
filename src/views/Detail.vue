@@ -91,7 +91,7 @@
               <p class="w-3/4">By dragging the sliders, you can design your style of {{ family.name }} typeface</p>
             </div>
 
-            <p class="mb-2 mt-4">Your styles</p>
+            <p class="mb-2 mt-4">Your styles of {{ family.name }}</p>
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
               <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true">
@@ -100,7 +100,7 @@
                     <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
-                  <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} {{ styleName(s) }}</div>
+                  <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
                   <div class="lg:invisible lg:group-hover:visible px-4 whitespace-nowrap">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
@@ -124,7 +124,7 @@
                   <span :class="buyFullFamily ? 'rotate-45' : 'rotate-0'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
                   <span :class="buyFullFamily ? '-rotate-45' : 'rotate-90'" class="absolute border-current border-t-2 left-1/4 top-1/2 transform w-1/2"></span>
                 </div>
-                <div class="min-w-0 px-4 truncate whitespace-nowrap">{{ family.name }} full family</div>
+                <div class="min-w-0 px-4 truncate whitespace-nowrap">Full family</div>
               </div>
               <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 pl-2 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
             </div>
