@@ -94,14 +94,14 @@
             <p class="mb-2 mt-4">Your styles of {{ family.name }}</p>
 
             <div :class="buyFullFamily ? 'opacity-50 pointer-events-none' : ''">
-              <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; isEditing = true; bounceSliders()">
+              <div class="cursor-pointer flex group" v-for="(s, i) in cart" :key="`cart_item_${i}`" @click="style = s; bounceSliders()">
                 <div :class="style === s && !buyFullFamily ? 'bg-secondary text-primary' : 'bg-white'" class="flex flex-grow items-center max-w-[calc(100%-3rem)] rounded-full">
                   <div class="h-10 min-w-[2.5rem] relative rounded-full" @click="removeStyle(s)">
                     <span class="absolute border-current border-t-2 left-1/4 rotate-45 top-1/2 transform w-1/2"></span>
                     <span class="absolute border-current border-t-2 left-1/4 -rotate-45 top-1/2 transform w-1/2"></span>
                   </div>
                   <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
-                  <div class="lg:invisible lg:group-hover:visible px-4 whitespace-nowrap">Edit</div>
+                  <div @click="isEditing = true" class="bg-secondary h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full text-primary">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
