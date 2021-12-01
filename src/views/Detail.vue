@@ -139,23 +139,26 @@
             <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
             <input type="checkbox" v-model="agree" ref="agree" style="--alert-color: red" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
           </label>
-        </div>
 
-        <div class="bg-white px-4 py-2" v-if="total > 0">
-          <table class="text-sm w-full">
-            <tbody v-if="buyFullFamily">
-              <tr>
-                <td>{{ family.name }} full family</td>
-                <td class="text-right">&euro;{{ family.family_price }}</td>
-              </tr>
-            </tbody>
-            <tbody v-else>
-              <tr v-for="(style, i) in filteredCart" :key="`summary_item_${i}`">
-                <td>{{ family.name }} {{ styleName(style) }}</td>
-                <td class="text-right">&euro;{{ family.style_price }}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div v-if="total > 0">
+            <p class="mb-2 mt-4">Summary</p>
+            <div class="bg-white px-4 py-2">
+              <table class="text-sm w-full">
+                <tbody v-if="buyFullFamily">
+                  <tr>
+                    <td>{{ family.name }} full family</td>
+                    <td class="text-right">&euro;{{ family.family_price }}</td>
+                  </tr>
+                </tbody>
+                <tbody v-else>
+                  <tr v-for="(style, i) in filteredCart" :key="`summary_item_${i}`">
+                    <td>{{ family.name }} {{ styleName(style) }}</td>
+                    <td class="text-right">&euro;{{ family.style_price }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
         <div class="bottom-0 bg-primary sticky w-full z-30" v-if="total > 0">
