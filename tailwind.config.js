@@ -64,6 +64,9 @@ module.exports = {
           }
         }
       },
+      screens: {
+          'can-hover': {'raw': '(hover: hover)'},
+      },
     },
   },
   variants: {

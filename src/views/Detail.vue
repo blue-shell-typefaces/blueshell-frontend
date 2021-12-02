@@ -102,28 +102,28 @@
                   <div class="flex-grow min-w-0 px-4 truncate whitespace-nowrap">{{ styleName(s) }}</div>
                   <div
                     @click="isEditing = true"
-                    :class="style === s ? 'bg-white text-black' : ''"
                     class="h-10 leading-10 lg:invisible lg:group-hover:visible px-4 rounded-full"
-                    :style="{ backgroundColor: valueToColor(Object.values(s)[0], true), color: valueToColor(Object.values(s)[0], false) }">Edit</div>
+                    :class="style === s ? 'bg-white text-black' : ''"
+                    :style="style !== s ? { backgroundColor: valueToColor(Object.values(s)[0], true), color: valueToColor(Object.values(s)[0], false) } : {}">Edit</div>
                 </div>
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
 
               <div class="cursor-pointer flex group" @click="addStyle(); bounceSliders()">
-                <div class="group-hover:bg-white flex flex-grow items-center max-w-full group-hover:max-w-[calc(100%-3rem)] rounded-full">
+                <div class="can-hover:group-hover:bg-white flex flex-grow items-center max-w-full can-hover:group-hover:max-w-[calc(100%-3rem)] rounded-full">
                   <div class="bg-plus bg-white h-10 min-w-[2.5rem] rounded-full"></div>
                   <div class="min-w-0 px-4 truncate">Add style</div>
                 </div>
-                <div class="h-10 hidden group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.style_price }}</div>
+                <div class="h-10 hidden can-hover:group-hover:block leading-10 rounded-full text-right w-12">&euro;{{ family.style_price }}</div>
               </div>
             </div>
 
             <div class="cursor-pointer flex my-4 group w-full" @click="buyFullFamily = !buyFullFamily">
-              <div :class="buyFullFamily ? 'bg-white max-w-[calc(100%-3rem)]' : 'group-hover:bg-white group-hover:max-w-[calc(100%-3rem)]'" class="flex flex-grow items-center rounded-full">
+              <div :class="buyFullFamily ? 'bg-white max-w-[calc(100%-3rem)]' : 'can-hover:group-hover:bg-white can-hover:group-hover:max-w-[calc(100%-3rem)]'" class="flex flex-grow items-center rounded-full">
                 <div :class="buyFullFamily ? 'bg-times' : 'bg-plus'" class="bg-white h-10 min-w-[2.5rem] rounded-full"></div>
                 <div class="min-w-0 px-4 truncate whitespace-nowrap">Full family</div>
               </div>
-              <div :class="buyFullFamily ? '' : 'hidden group-hover:block'" class="h-10 leading-10 pl-2 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
+              <div :class="buyFullFamily ? '' : 'hidden can-hover:group-hover:block'" class="h-10 leading-10 pl-2 rounded-full text-right w-12">&euro;{{ family.family_price }}</div>
             </div>
           </div>
 
