@@ -141,7 +141,7 @@
 
           <label class="cursor-pointer flex items-center mb-2 mt-4" v-if="total > 0">
             <span class="flex-grow ">Do you agree to <a class="underline" href="#">EULA</a></span>
-            <input type="checkbox" v-model="agree" ref="agree" style="--alert-color: red" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
+            <input type="checkbox" v-model="agree" ref="agree" class="appearance-none bg-white checked:bg-black cursor-pointer h-10 rounded-full w-10">
           </label>
 
           <div v-if="total > 0">
@@ -197,10 +197,6 @@ textarea {
 
 textarea::selection {
   @apply bg-none text-secondary;
-}
-
-[data-licence] {
-  --alert-color: red;
 }
 </style>
 

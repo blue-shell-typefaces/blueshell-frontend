@@ -4,6 +4,7 @@
 
 @layer base {
     :root {
+        --alert-color: theme('colors.red');
         font-feature-settings: 'calt' 1;
         font-size: 18px;
     }

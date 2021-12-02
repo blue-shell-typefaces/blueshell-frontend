@@ -4,7 +4,7 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     fontFamily: {
-      'sans': ['Arial'],
+      'sans': ['Arial', 'sans-serif'],
     },
     fontSize: {
       'sm': ['.76rem', {
@@ -26,12 +26,8 @@ module.exports = {
         'plus': 'url("/assets/plus.svg")',
         'times': 'url("/assets/times.svg")',
       },
-      borderWidth: {
-        '1': '1px',
-        '2': '2px',
-      },
       colors: {
-        'red': '#ff0000',
+        'red': 'red',
         'lightgray': 'lightgray',
         'primary': 'var(--primary-color)',
         'secondary': 'var(--secondary-color)',
