@@ -109,7 +109,7 @@
                 <div class="h-10 leading-10 rounded-full text-right w-12" :class="buyFullFamily ? 'invisible' : ''">&euro;{{ family.style_price }}</div>
               </div>
 
-              <div class="cursor-pointer flex group" @click="addStyle">
+              <div class="cursor-pointer flex group" @click="addStyle(); bounceSliders()">
                 <div class="group-hover:bg-white flex flex-grow items-center max-w-full group-hover:max-w-[calc(100%-3rem)] rounded-full">
                   <div class="bg-plus bg-white h-10 min-w-[2.5rem] rounded-full"></div>
                   <div class="min-w-0 px-4 truncate">Add style</div>
@@ -181,15 +181,13 @@
 
 <style scoped>
 [data-replicated-value] {
-  display: grid;
+  @apply grid;
 }
 
 [data-replicated-value]::after {
   /* append null character for empty new line to have effect */
   content: attr(data-replicated-value) "\200b";
-  white-space: pre-wrap !important;
-  visibility: hidden;
-
+  @apply invisible whitespace-pre-wrap;
 }
 
 [data-replicated-value]::after,
@@ -198,8 +196,7 @@ textarea {
 }
 
 textarea::selection {
-  color: var(--secondary-color);
-  background: none;
+  @apply bg-none text-secondary;
 }
 
 [data-licence] {
@@ -225,6 +222,7 @@ export default {
   },
   data() {
     return {
+      refreshLock: false,
       family: null,
       isCartShown: false,
       isEditing: false,
@@ -256,6 +254,12 @@ export default {
     }
   },
   created() {
+    window.addEventListener('resize', this.windowResized)
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.windowResized)
+  },
+  mounted() {
     axios.get(`${import.meta.env.VITE_API_URL}/families`)
       .then(({data}) => {
         this.$fonts = data
@@ -264,32 +268,25 @@ export default {
       .catch(function () {
         // todo error
       })
-
-    window.addEventListener('resize', this.windowResized)
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.windowResized)
   },
   methods: {
     introAnimation() {
-      if (document.visibilityState === 'visible') {
-        document.removeEventListener('visibilitychange', this.introAnimation)
-        for (const [name, axis] of Object.entries(this.family.axes)) {
-          setTimeout(() => {
-            this.animate(
-              function (t) {
-                return t;
-              },
-              progress => {
-                const value = progress * (axis.origin - axis.min) + axis.min
-                this.updateColors(value)
-                this.style[name] = value
-              },
-              2000
-            )
-          }, 600)
+      if (document.visibilityState !== 'visible') return
+      document.removeEventListener('visibilitychange', this.introAnimation)
+      Object.entries(this.family.axes).forEach(([name, axis]) => {
+        const animation = progress => {
+          const value = progress * (axis.origin - axis.min) + axis.min
+          this.updateColors(value)
+          this.style[name] = value
         }
-      }
+
+        this
+          .animate(t => t, animation, 2000)
+          .then(() => {
+            this.refreshLock = false
+            this.refresh()
+          })
+      })
     },
     isTouchDevice() {
       return (('ontouchstart' in window) ||
@@ -311,10 +308,10 @@ export default {
       const character = characters.shift()
       this.sampleText += character
       this.$nextTick(() => {
-        this.refresh()
+        this.refresh(true)
         setTimeout(() => {
           this.animateText(characters, length)
-        }, Math.ceil(300 / length))
+        }, Math.ceil(400 / length))
       })
     },
     updateFamily() {
@@ -324,35 +321,25 @@ export default {
         document.fonts.add(fontFace)
         document.fonts.ready.then(() => {
           this.sampleText = this.family.sample_text
+          const style = {}
+          Object.entries(this.family.axes).forEach(([name, axis]) => {
+            style[name] = axis.origin
+          })
+          this.style = reactive(style)
+
           this.$nextTick(() => {
-            const style = {}
+            this.refresh()
+            this.refreshLock = true
+
             Object.keys(this.family.axes).forEach(name => {
-              style[name] = this.family.axes[name].origin
+              this.style[name] = 0
             })
 
-            this.style = reactive(style)
+            document.addEventListener('visibilitychange', this.introAnimation)
+            this.introAnimation()
 
-            this.$nextTick(() => {
-              this.refresh()
-
-              Object.keys(this.family.axes).forEach(name => {
-                this.style[name] = 0
-              })
-
-              document.addEventListener('visibilitychange', this.introAnimation)
-              this.introAnimation()
-
-              const el = this.$refs.textarea
-              const selection = window.getSelection()
-              const range = document.createRange()
-              selection.removeAllRanges()
-              range.selectNodeContents(el)
-              range.collapse(false)
-              selection.addRange(range)
-              this.$refs.textarea.focus()
-
-              this.addStyle(false)
-            })
+            this.focus(this.$refs.textarea)
+            this.addStyle()
           })
         })
       }).catch(function () {
@@ -360,22 +347,34 @@ export default {
       })
 
     },
+    focus(el) {
+      const selection = window.getSelection()
+      const range = document.createRange()
+      selection.removeAllRanges()
+      range.selectNodeContents(el)
+      range.collapse(false)
+      selection.addRange(range)
+      el.focus()
+    },
     animate(timing, draw, duration) {
-      let start = performance.now();
+      const start = performance.now()
+      return new Promise(resolve => {
+        requestAnimationFrame(function animate(time) {
+          let timeFraction = (time - start) / duration
+          if (timeFraction < 0) timeFraction = 0
+          if (timeFraction > 1) timeFraction = 1
 
-      requestAnimationFrame(function animate(time) {
-        let timeFraction = (time - start) / duration
-        if (timeFraction < 0) timeFraction = 0
-        if (timeFraction > 1) timeFraction = 1
-  
-        let progress = timing(timeFraction)
+          let progress = timing(timeFraction)
 
-        draw(progress)
+          draw(progress)
 
-        if (timeFraction < 1) {
-          requestAnimationFrame(animate)
-        }
-      });
+          if (timeFraction < 1) {
+            requestAnimationFrame(animate)
+          } else {
+            resolve()
+          }
+        });
+      })
     },
     blink(el) {
       el.classList.remove('animate-alert')
@@ -419,13 +418,9 @@ export default {
         // })
       }
     },
-    addStyle(bounce = true) {
+    addStyle() {
       this.style = reactive({ ...this.style })
       this.cart.push(this.style)
-
-      if (bounce) {
-        this.bounceSliders()
-      }
     },
     bounceSliders() {
       this.markerSliderRefs.forEach(slider => {
@@ -452,9 +447,11 @@ export default {
       }
     },
     windowResized() {
-        this.refresh()
+      this.refresh()
     },
-    refresh() {
+    refresh(force = false) {
+      if (this.refreshLock && !force) return
+
       this.fontSize = 1000
       let ratio
 
@@ -496,17 +493,6 @@ export default {
       this.$refs.container.style.fontSize = `${Math.floor(this.fontSize)}px`
 
       return ratio
-    },
-    paste(e) {
-        e.preventDefault()
-        const text = e.clipboardData.getData('text/plain')
-        document.execCommand('insertText', false, text)
-    },
-    keydown(e) {
-        if (e.key === 'Enter') {
-            document.execCommand('insertLineBreak')
-            e.preventDefault()
-        }
     },
     styleName(style) {
       const values = Object.entries(style)
@@ -569,22 +555,18 @@ export default {
       }
     },
     testerStyle() {
-        const style = {}
+      if (!this.style) return
 
-        if (this.style) {
-          style.fontVariationSettings = Object.keys(this.style)
-            .map(axis => `'${axis}' var(--${axis})`)
-            .join(',')
+      const style = {}
+      style.fontVariationSettings = Object.keys(this.style)
+        .map(axis => `'${axis}' var(--${axis})`)
+        .join(',')
 
-          Object.assign(
-            style,
-            Object.fromEntries(
-              Object.entries(this.style).map(([k, v]) => [`--${k}`, v])
-            )
-          )
-        }
+      Object.entries(this.style).map(([key, value]) => {
+        style[`--${key}`] = value
+      })
 
-        return style
+      return style
     }
   },
   watch: {
