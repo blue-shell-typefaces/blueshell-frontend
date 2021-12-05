@@ -82,8 +82,8 @@ export default {
     },
     start(e) {
       this.dragging = true
-      this.$emit('start')
       this.move(e)
+      this.$emit('start')
       this.bounce(false)
     },
     end() {

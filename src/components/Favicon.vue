@@ -35,7 +35,9 @@ export default {
             this.canvas.height = 64
         },
         updateSvg() {
-            this.svgIcon.setAttribute('href', `data:image/svg+xml,${encodeURIComponent(this.$el.outerHTML)}`)
+            this.$nextTick(() => {
+                this.svgIcon.setAttribute('href', `data:image/svg+xml,${encodeURIComponent(this.$el.outerHTML)}`)
+            })
         },
         updatePng() {
             const ctx = this.canvas.getContext('2d')
