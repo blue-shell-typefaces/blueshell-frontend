@@ -19,8 +19,8 @@
             <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
               :class="{ 'hidden': cartShown }"
               @click="cartShown = true"
-              @mouseover="buyHover(true)"
-              @mouseleave="buyHover(false)"
+              @mouseover="buyButtonHover = true"
+              @mouseleave="buyButtonHover = false"
               v-show="!cartShown">Buy</div>
             <div class="bg-secondary cursor-pointer h-10 leading-10 ml-5 rounded-full text-center text-primary w-10"
               :class="editing ? 'lg:hidden' : 'hidden'"
@@ -196,11 +196,6 @@ export default {
         (navigator.maxTouchPoints > 0) ||
         (navigator.msMaxTouchPoints > 0))
     },
-    buyHover(value) {
-      if (!this.isTouchDevice()) {
-        this.buyButtonHover = value
-      }
-    },
     menu(e) {
       this.sampleText = '';
       const characters = [...e.target.dataset.content]
@@ -352,7 +347,7 @@ export default {
         return this.primaryColor
       }
 
-      if (this.buyButtonHover || this.cartShown) {
+      if (this.buyButtonHover && !this.isTouchDevice() || this.cartShown) {
         return 'black'
       } else {
         return 'white'
@@ -363,7 +358,7 @@ export default {
         return this.secondaryColor
       }
 
-      if (this.buyButtonHover || this.cartShown) {
+      if (this.buyButtonHover && !this.isTouchDevice() || this.cartShown) {
         return 'white'
       } else {
         return 'black'
