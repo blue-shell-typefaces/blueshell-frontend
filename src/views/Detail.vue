@@ -1,7 +1,7 @@
 <template>
   <div v-if="family">
-    <div class="fixed inset-0 min-h-full"
-        :class="[cartShown ? 'w-full lg:w-3/4' : 'w-full']">
+    <div class="fixed inset-0 min-h-full w-full"
+        :class="{ 'lg:w-3/4': cartShown }">
       <div class="left-0 right-0 sticky top-0 w-full z-10">
         <div class="flex items-center px-4 py-2" :class="editing ? 'justify-end' : 'justify-between'">
 
