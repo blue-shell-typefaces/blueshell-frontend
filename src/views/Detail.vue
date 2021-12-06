@@ -113,6 +113,7 @@ import MarkerSlider from "../components/MarkerSlider.vue"
 import SelectSlider from "../components/SelectSlider.vue"
 import axios from "axios"
 import { reactive } from "vue"
+import { debounce } from "lodash"
 
 export default {
   name: 'Detail',
@@ -140,13 +141,14 @@ export default {
       selectSliderRefs: [],
       about: 'This website and typeface is still under development. We released it as public beta to catch any inconsistencies.\nSupported using public funding by Slovak Arts Council\n\u2133',
       contact: 'info@blueshell.xyz',
+      refreshDebounced: debounce(this.refresh, 300)
     }
   },
   created() {
-    window.addEventListener('resize', this.windowResized)
+    window.addEventListener('resize', this.refreshDebounced)
   },
   destroyed() {
-    window.removeEventListener('resize', this.windowResized)
+    window.removeEventListener('resize', this.refreshDebounced)
   },
   mounted() {
     axios.get(`${import.meta.env.VITE_API_URL}/families`)
@@ -294,9 +296,6 @@ export default {
       } else {
         return `hsl(${mapped}, 100%, 50%)`
       }
-    },
-    windowResized() {
-      this.refresh()
     },
     refresh(force = false) {
       if (this.refreshLock && !force) return
